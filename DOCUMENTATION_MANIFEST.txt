@@ -1,0 +1,19 @@
+PROVEXA documentation package
+
+- README.md
+- docs/API_CONTRACTS.md
+- docs/ARCHITECTURE.md
+- docs/ARCHITECTURE_DECISIONS.md
+- docs/CONTRIBUTING.md
+- docs/DATA_MODELS.md
+- docs/ENVIRONMENT.md
+- docs/FOLDER_STRUCTURE.md
+- docs/INTEGRATION_CHECKLIST.md
+- docs/INTEGRATION_GUIDE.md
+- docs/PROJECT_OVERVIEW.md
+- docs/PROJECT_STRUCTURE.txt
+- docs/TECH_STACK.md
+- docs/tasks/EXPERIENCE_BUILDER.md
+- docs/tasks/INTEGRATION_LEAD.md
+- docs/tasks/INTELLIGENCE_BUILDER.md
+- docs/tasks/PLATFORM_BUILDER.md

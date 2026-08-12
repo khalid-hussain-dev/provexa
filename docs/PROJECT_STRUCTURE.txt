@@ -1,0 +1,36 @@
+PROVEXA/
+├── frontend/
+├── backend/
+├── services/
+│   ├── ai/
+│   │   ├── crews/
+│   │   ├── agents/
+│   │   ├── tasks/
+│   │   ├── prompts/
+│   │   ├── validators/
+│   │   └── llm_gateway/
+│   ├── github/
+│   ├── jobs/
+│   └── integrations/
+├── gigs/
+│   ├── authkit/
+│   └── jobfit/
+├── tests/
+├── docs/
+│   ├── PROJECT_OVERVIEW.md
+│   ├── ARCHITECTURE.md
+│   ├── TECH_STACK.md
+│   ├── FOLDER_STRUCTURE.md
+│   ├── PROJECT_STRUCTURE.txt
+│   ├── API_CONTRACTS.md
+│   ├── DATA_MODELS.md
+│   ├── INTEGRATION_GUIDE.md
+│   ├── INTEGRATION_CHECKLIST.md
+│   ├── ENVIRONMENT.md
+│   ├── CONTRIBUTING.md
+│   ├── ARCHITECTURE_DECISIONS.md
+│   └── tasks/
+├── .env.example
+├── .gitignore
+├── docker-compose.yml
+└── README.md

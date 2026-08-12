@@ -1,6 +1,6 @@
 # PROVEXA Copy-Based Integration Contract and Risk Report
 
-Status: setup-only. No production behavior is wired in this phase.
+Status: Phase 3 implemented locally; Experience Builder remains out of scope.
 
 ## Architectural decision
 
@@ -48,14 +48,14 @@ Experience Builder is excluded completely.
 
 | Capability | Authoritative behavior | Proposed copy-only integration | Initial status |
 |---|---|---|---|
-| Authentication | Platform | Internal auth facade around Intelligence-hosted requests | Planned; not wired |
-| Candidate/evidence storage | Platform | Platform repositories provide normalized input to adapters | Planned; not wired |
-| Candidate AI analysis | Intelligence profile workflow | Adapter maps `CandidateProfile` and validated profile context to Platform capability records | Planned; first AI target |
+| Authentication | Platform | Internal auth facade around Intelligence-hosted requests | Implemented Phase 1 |
+| Candidate/evidence storage | Platform | Platform repositories provide normalized input to adapters | Implemented Phase 1 |
+| Candidate AI analysis | Intelligence profile workflow | Adapter maps `CandidateProfile` and persists validated profile context snapshots | Implemented Phase 2 |
 | Job analysis | Platform deterministic analysis | Keep Platform behavior; Intelligence has no matching job-analysis workflow | Deferred |
 | Candidate/job match | Platform deterministic scoring | Keep Platform behavior until a compatible Intelligence workflow exists | Deferred |
-| Interview questions | Intelligence `InterviewSystem.generate_interview_questions` | Adapter translates Platform candidate/job context and persists questions through Platform | Planned |
-| Interview answers | Platform answer persistence | Keep per-answer Platform state; send the complete transcript to Intelligence for final reasoning | Planned |
-| Interview verdict | Intelligence interview evaluation | Validate/map `InterviewResult` into the Platform verdict contract | Planned |
+| Interview questions | Intelligence `InterviewSystem.generate_interview_questions` | Adapter translates Platform candidate/job context and persists questions through Platform | Implemented Phase 3 |
+| Interview answers | Platform answer persistence | Keep per-answer Platform state; send the complete transcript to Intelligence for final reasoning | Implemented Phase 3 |
+| Interview verdict | Intelligence interview evaluation | Validate and persist an allowlisted `InterviewResult` snapshot without inventing dimension scores | Implemented Phase 3 |
 | Learning path | Intelligence `generate_targeted_course` | Adapter maps `DetailedCourse` and modules to Platform course records | Planned |
 | Resume tailoring | Intelligence optimizer | Use only with explicit source text and evidence references; Platform remains evidence-lock authority | Deferred after contract test |
 | Job recommendations | Existing Intelligence route and job service | Preserve Intelligence route; do not mount conflicting Platform route at the same path | Planned host policy |
@@ -73,4 +73,3 @@ Experience Builder is excluded completely.
 - **Persistence mismatch:** Platform owns durable records. The Intelligence `DATABASE_URL` and `REDIS_URL` settings must not create a second source of truth.
 - **Provider failure:** Gemini, Groq, GitHub, and Adzuna can be unavailable. The host must preserve seeded/deterministic fallback behavior and report provider state without leaking credentials.
 - **Evidence safety:** Resume and capability outputs must retain evidence references; an AI confidence value must not upgrade verification status by itself.
-

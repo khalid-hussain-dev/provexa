@@ -25,3 +25,10 @@ class InvalidIntelligenceOutputError(AppError):
             status.HTTP_502_BAD_GATEWAY,
             details,
         )
+
+
+class IncompleteInterviewError(AppError):
+    """The transcript is not complete enough for Intelligence evaluation."""
+
+    def __init__(self, message: str = "Answer every interview question before completing") -> None:
+        super().__init__("INCOMPLETE_INTERVIEW", message, status.HTTP_409_CONFLICT)

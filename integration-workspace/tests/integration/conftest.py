@@ -91,7 +91,47 @@ def profile_gateway():
 
 
 @pytest.fixture
-def host_app(intelligence_app: FastAPI, profile_gateway) -> FastAPI:
+def interview_gateway():
+    class FakeInterviewGateway:
+        def __init__(self) -> None:
+            self.generation_inputs = []
+            self.evaluation_inputs = []
+            self.question_result = [
+                {"question": "Explain a FastAPI service you shipped.", "category": "FastAPI", "difficulty": "medium"},
+                {"question": "How did you test the service?", "category": "Testing", "difficulty": "medium"},
+            ]
+            self.evaluation_result = {
+                "candidate_name": "Test Candidate",
+                "target_role": "Backend Engineer",
+                "overall_score": 82,
+                "assessed_level": "mid",
+                "skill_assessments": [
+                    {"skill_name": "FastAPI", "percentage": 84, "strength_level": "advanced", "evidence": ["answer-1"]}
+                ],
+                "analysis": {
+                    "strengths": ["API design"],
+                    "weaknesses": ["Testing depth"],
+                    "improvement_areas": ["Add integration-test examples"],
+                },
+                "course_recommendations": [],
+                "interview_summary": "A solid backend interview with clear API reasoning.",
+                "role_match_percentage": 80,
+                "raw_provider_payload": "must not persist",
+            }
+
+        async def generate_questions(self, profile_context, num_questions):
+            self.generation_inputs.append((profile_context, num_questions))
+            return self.question_result[:num_questions]
+
+        async def evaluate(self, profile_context, questions, responses):
+            self.evaluation_inputs.append((profile_context, questions, responses))
+            return self.evaluation_result
+
+    return FakeInterviewGateway()
+
+
+@pytest.fixture
+def host_app(intelligence_app: FastAPI, profile_gateway, interview_gateway) -> FastAPI:
     from integration.host import create_host_app
     from integration.session_store import InMemorySessionStore
 
@@ -99,13 +139,16 @@ def host_app(intelligence_app: FastAPI, profile_gateway) -> FastAPI:
         intelligence_app,
         session_store=InMemorySessionStore(),
         profile_gateway=profile_gateway,
+        interview_gateway=interview_gateway,
     )
 
 
 @pytest.fixture(autouse=True)
 def reset_database() -> None:
     from app.auth.repository import reset_user_repository
+    from integration.interview_persistence import reset_interview_integration_records
     from integration.profile_persistence import reset_profile_analysis_snapshots
 
-    reset_user_repository()
+    reset_interview_integration_records()
     reset_profile_analysis_snapshots()
+    reset_user_repository()

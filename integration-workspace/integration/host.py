@@ -14,6 +14,7 @@ def create_host_app(
     *,
     session_store: SessionStore | None = None,
     profile_gateway=None,
+    interview_gateway=None,
 ) -> FastAPI:
     """Decorate the unchanged Intelligence app with Phase 1 Platform services."""
 
@@ -21,6 +22,9 @@ def create_host_app(
     validate_security_configuration()
     from .auth_router import router as auth_router
     from .candidate_router import router as candidate_router
+    from .interview_adapter import IntelligenceInterviewGateway
+    from .interview_persistence import InterviewContextRecord, InterviewEvaluationRecord  # noqa: F401
+    from .interview_router import build_interview_router
     from .profile_adapter import IntelligenceProfileGateway
     from .profile_persistence import ProfileAnalysisSnapshotRecord  # noqa: F401
     from .profile_router import build_profile_router
@@ -35,6 +39,9 @@ def create_host_app(
     intelligence_app.include_router(auth_router)
     intelligence_app.include_router(candidate_router)
     intelligence_app.include_router(build_profile_router(profile_gateway or IntelligenceProfileGateway()))
+    intelligence_app.include_router(
+        build_interview_router(interview_gateway or IntelligenceInterviewGateway())
+    )
 
     @intelligence_app.get("/api/v1/readiness", tags=["integration-support"])
     async def readiness() -> dict:

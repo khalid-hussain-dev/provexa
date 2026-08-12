@@ -26,30 +26,32 @@ Status: planning only. Experience Builder is excluded.
 3. Avoid mounting conflicting Platform `/api/v1` routes over existing Intelligence routes.
 4. Add health/readiness reporting for database, Redis, and AI-provider availability.
 
-## Phase 3: first AI workflow connection
+## Phase 2: candidate/profile-analysis connection
 
-Status: Phase 2 candidate/profile-analysis adapter implemented locally. The existing Intelligence profile route and workflow files remain unchanged. The protected integration route validates and persists only an allowlisted profile snapshot.
+Status: completed locally. The existing Intelligence profile route and workflow files remain unchanged. The protected integration route validates and persists only an allowlisted profile snapshot.
 
-1. Connect candidate/evidence payloads to the existing Intelligence profile workflow.
-2. Validate the returned profile context and map it to Platform capability/evidence records.
-3. Preserve deterministic fallback when AI configuration or providers are unavailable.
-4. Run candidate analysis and persistence tests before proceeding.
+1. Connect candidate/evidence payloads to the existing Intelligence profile workflow. Completed.
+2. Validate the returned profile context and persist an integration-owned snapshot. Completed.
+3. Preserve deterministic fallback when AI configuration or providers are unavailable. Deferred to provider-readiness work.
+4. Run candidate analysis and persistence tests before proceeding. Completed with fake providers.
 
-## Phase 4: interview connection
+## Phase 3: interview connection
 
-1. Preserve Platform answer persistence.
-2. Use existing Intelligence question generation where the candidate/job mapping is valid.
-3. Submit complete transcripts to the existing Intelligence evaluator.
-4. Validate and persist the final verdict, scores, strengths, gaps, and recommendations.
+Status: implemented locally. The adapter preserves Intelligence question generation/evaluation semantics, while Platform owns authenticated interview state, transcript persistence, and ownership boundaries.
 
-## Phase 5: course and resume compatibility
+1. Preserve Platform answer persistence. Completed.
+2. Use existing Intelligence question generation with a validated profile snapshot and Platform job context. Completed.
+3. Submit complete transcripts to the existing Intelligence evaluator. Completed.
+4. Validate and persist the final Intelligence result without inventing dimension scores. Completed.
+
+## Phase 4: course and resume compatibility
 
 1. Map existing Intelligence course modules into Platform course records.
 2. Keep Platform progress persistence authoritative.
 3. Test resume optimization only with explicit source text and evidence references.
 4. Keep Platform evidence lock authoritative; never infer verification from AI output.
 
-## Phase 6: local golden-path validation
+## Phase 5: local golden-path validation
 
 Run locally in this order:
 

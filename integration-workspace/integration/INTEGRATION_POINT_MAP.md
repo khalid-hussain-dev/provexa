@@ -50,6 +50,9 @@ The eventual composed host must preserve the existing Intelligence route paths. 
 
 - `POST /api/v1/integration/profile/analyze`: authenticated Platform candidate/evidence data is mapped to the existing Intelligence `CandidateProfile` shape, passed through the existing profile-preparation workflow, validated at the boundary, and persisted as an integration-owned profile snapshot.
 - Raw or unknown Intelligence fields are not persisted. Capability scores are not invented because the existing profile output does not provide evidence-backed scores.
+- `POST /api/v1/integration/interviews`: authenticated candidate plus a Platform job and latest profile snapshot are mapped into the unchanged Intelligence question-generation method; generated questions are validated and persisted in Platform interview tables.
+- `POST /api/v1/integration/interviews/{interview_id}/answers`: owned transcript answers are persisted without local scoring; Intelligence remains the evaluation authority.
+- `POST /api/v1/integration/interviews/{interview_id}/complete`: the owned transcript is submitted to the unchanged Intelligence evaluation method, then an allowlisted evaluation snapshot is persisted.
 
 ## Remaining proposed adapter contracts
 

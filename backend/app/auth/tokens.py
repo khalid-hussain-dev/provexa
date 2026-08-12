@@ -11,12 +11,17 @@ from app.core.errors import AuthenticationError
 _HEADER = {"alg": "HS256", "typ": "JWT"}
 
 
-def create_access_token(subject: str, settings: Settings, claims: dict[str, Any] | None = None) -> str:
+def create_access_token(
+    subject: str,
+    settings: Settings,
+    claims: dict[str, Any] | None = None,
+    expires_minutes: int | None = None,
+) -> str:
     now = datetime.now(timezone.utc)
     payload: dict[str, Any] = {
         "sub": subject,
         "iat": int(now.timestamp()),
-        "exp": int((now + timedelta(minutes=settings.jwt_access_token_minutes)).timestamp()),
+        "exp": int((now + timedelta(minutes=expires_minutes or settings.jwt_access_token_minutes)).timestamp()),
     }
     if claims:
         payload.update(claims)
@@ -48,6 +53,15 @@ def decode_access_token(token: str, settings: Settings) -> dict[str, Any]:
     if not payload.get("sub"):
         raise AuthenticationError("Invalid access token")
     return payload
+
+
+def create_pending_2fa_token(subject: str, settings: Settings) -> str:
+    return create_access_token(subject, settings, {"purpose": "2fa_pending"}, expires_minutes=5)
+
+
+def require_token_purpose(payload: dict[str, Any], purpose: str) -> None:
+    if payload.get("purpose") != purpose:
+        raise AuthenticationError("Invalid access token")
 
 
 def _b64_json(value: dict[str, Any]) -> str:

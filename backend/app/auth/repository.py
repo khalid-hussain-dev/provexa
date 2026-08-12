@@ -6,7 +6,21 @@ from fastapi import Depends
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
-from app.database.models import PasswordResetTokenRecord, RevokedTokenRecord, UserRecord
+from app.database.models import (
+    AnalysisRecord,
+    CandidateRecord,
+    CapabilityRecord,
+    CourseRecord,
+    EvidenceRecord,
+    InterviewRecord,
+    JobRecord,
+    JobRequirementRecord,
+    PasswordResetTokenRecord,
+    ResumeRecord,
+    RevokedTokenRecord,
+    SubscriptionRecord,
+    UserRecord,
+)
 from app.database.session import SessionLocal, get_db_session, init_database
 from app.auth.models import User
 
@@ -134,6 +148,16 @@ def get_user_repository(session: Session = Depends(get_db_session)) -> UserRepos
 def reset_user_repository() -> None:
     init_database()
     with SessionLocal() as session:
+        session.execute(delete(SubscriptionRecord))
+        session.execute(delete(ResumeRecord))
+        session.execute(delete(CourseRecord))
+        session.execute(delete(InterviewRecord))
+        session.execute(delete(AnalysisRecord))
+        session.execute(delete(JobRequirementRecord))
+        session.execute(delete(JobRecord))
+        session.execute(delete(CapabilityRecord))
+        session.execute(delete(EvidenceRecord))
+        session.execute(delete(CandidateRecord))
         session.execute(delete(PasswordResetTokenRecord))
         session.execute(delete(RevokedTokenRecord))
         session.execute(delete(UserRecord))

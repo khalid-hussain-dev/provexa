@@ -41,13 +41,20 @@ Last updated: 2026-08-12
   - ORM tables for Platform Builder domain entities.
   - auth repository moved from in-memory store to SQLAlchemy persistence.
   - readiness now verifies database connectivity.
+- Candidate/evidence API batch:
+  - `GET /api/v1/candidate`
+  - `PUT /api/v1/candidate`
+  - `POST /api/v1/candidate/evidence`
+  - candidate ownership via authenticated user
+  - evidence stored with source-type validation and `CLAIMED` default status
+  - validation envelope hardened for non-serializable Pydantic error context
 
 ## Contract Drift / Known Issues
 
 - Auth response contract drift has been resolved in favor of `API_CONTRACTS.md`.
 - Migrations are not implemented yet; current hackathon foundation uses `Base.metadata.create_all`.
 - Redis is not implemented yet.
-- Candidate/evidence/job/etc. tables exist, but their APIs are not implemented yet.
+- Job/analysis/interview/course/resume/subscription tables exist, but their APIs are not implemented yet.
 - Intelligence service is an interface/placeholder only; no deterministic demo stub is wired into API flows yet.
 
 ## Remaining Platform Builder Work
@@ -59,10 +66,6 @@ Last updated: 2026-08-12
   - `REDIS_URL`
   - graceful local fallback
   - readiness awareness
-- Candidate API:
-  - `GET /candidate`
-  - `PUT /candidate`
-  - `POST /candidate/evidence`
 - Analysis API:
   - `POST /analysis/candidate`
   - `POST /analysis/job`

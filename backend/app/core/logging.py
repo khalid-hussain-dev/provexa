@@ -20,6 +20,8 @@ class JsonFormatter(logging.Formatter):
 
 
 def redact(value: Any) -> Any:
+    if isinstance(value, BaseException):
+        return str(value)
     if isinstance(value, dict):
         sensitive_context = _contains_sensitive_key(value.get("loc"))
         return {

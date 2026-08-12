@@ -55,6 +55,13 @@ Last updated: 2026-08-12
   - deterministic capability extraction from evidence text
   - deterministic job requirement extraction from job descriptions
   - persisted analysis snapshots and not-found handling for unknown jobs
+- Jobs API batch:
+  - `GET /api/v1/jobs`
+  - `GET /api/v1/jobs/{job_id}`
+  - `POST /api/v1/jobs/recommend`
+  - seeded demo jobs inside the backend
+  - deterministic job scoring from candidate capabilities and evidence
+  - route shadowing avoided with UUID path conversion
 
 ## Contract Drift / Known Issues
 
@@ -73,14 +80,9 @@ Last updated: 2026-08-12
   - `REDIS_URL`
   - graceful local fallback
   - readiness awareness
-- Analysis API:
 - GitHub API demo boundary:
   - `POST /github/connect`
   - `POST /github/analyze`
-- Jobs API:
-  - `GET /jobs`
-  - `GET /jobs/{job_id}`
-  - `POST /jobs/recommend`
 - Interviews API:
   - `POST /interviews`
   - `POST /interviews/{interview_id}/answer`

@@ -12,6 +12,8 @@ class Settings(BaseModel):
     cors_origins: list[str] = ["http://localhost:3000"]
     database_url: str = "sqlite:///./provexa_dev.db"
     redis_url: str | None = None
+    redis_connect_timeout_seconds: int = 1
+    transient_state_prefix: str = "provexa"
     jwt_secret_key: str = "dev-only-change-me"
     jwt_access_token_minutes: int = 30
     pending_2fa_token_minutes: int = 5
@@ -53,6 +55,8 @@ def get_settings() -> Settings:
         cors_origins=_parse_csv(os.getenv("CORS_ORIGINS"), ["http://localhost:3000"]),
         database_url=os.getenv("DATABASE_URL", "sqlite:///./provexa_dev.db"),
         redis_url=os.getenv("REDIS_URL"),
+        redis_connect_timeout_seconds=_parse_int(os.getenv("REDIS_CONNECT_TIMEOUT_SECONDS"), 1),
+        transient_state_prefix=os.getenv("TRANSIENT_STATE_PREFIX", "provexa"),
         jwt_secret_key=os.getenv("JWT_SECRET") or os.getenv("JWT_SECRET_KEY", "dev-only-change-me"),
         jwt_access_token_minutes=_parse_int(os.getenv("JWT_ACCESS_TOKEN_MINUTES"), 30),
         pending_2fa_token_minutes=_parse_int(os.getenv("PENDING_2FA_TOKEN_MINUTES"), 5),

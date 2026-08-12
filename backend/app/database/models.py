@@ -34,6 +34,7 @@ class UserRecord(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False)
 
     candidate: Mapped["CandidateRecord | None"] = relationship(back_populates="user")
+    subscriptions: Mapped[list["SubscriptionRecord"]] = relationship(back_populates="user")
 
 
 class PasswordResetTokenRecord(Base):
@@ -67,6 +68,10 @@ class CandidateRecord(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False)
 
     user: Mapped[UserRecord] = relationship(back_populates="candidate")
+
+    interviews: Mapped[list["InterviewRecord"]] = relationship(back_populates="candidate")
+    courses: Mapped[list["CourseRecord"]] = relationship(back_populates="candidate")
+    resumes: Mapped[list["ResumeRecord"]] = relationship(back_populates="candidate")
 
 
 class EvidenceRecord(Base):
@@ -117,6 +122,11 @@ class JobRecord(Base):
     metadata_json: Mapped[dict] = mapped_column("metadata", JsonType, default=dict, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
 
+    requirements: Mapped[list["JobRequirementRecord"]] = relationship(back_populates="job")
+    interviews: Mapped[list["InterviewRecord"]] = relationship(back_populates="job")
+    courses: Mapped[list["CourseRecord"]] = relationship(back_populates="job")
+    resumes: Mapped[list["ResumeRecord"]] = relationship(back_populates="job")
+
 
 class JobRequirementRecord(Base):
     __tablename__ = "job_requirements"
@@ -128,6 +138,8 @@ class JobRequirementRecord(Base):
     requirement_type: Mapped[str] = mapped_column(String(32), default="REQUIRED", nullable=False)
     evidence_expectation: Mapped[str | None] = mapped_column(Text, nullable=True)
     metadata_json: Mapped[dict] = mapped_column("metadata", JsonType, default=dict, nullable=False)
+
+    job: Mapped[JobRecord] = relationship(back_populates="requirements")
 
 
 class AnalysisRecord(Base):
@@ -163,6 +175,11 @@ class InterviewRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
+    candidate: Mapped[CandidateRecord] = relationship(back_populates="interviews")
+    job: Mapped[JobRecord] = relationship(back_populates="interviews")
+    questions: Mapped[list["InterviewQuestionRecord"]] = relationship(back_populates="interview", cascade="all, delete-orphan")
+    answers: Mapped[list["InterviewAnswerRecord"]] = relationship(back_populates="interview", cascade="all, delete-orphan")
+
 
 class CourseRecord(Base):
     __tablename__ = "courses"
@@ -177,6 +194,11 @@ class CourseRecord(Base):
     modules: Mapped[list] = mapped_column(JsonType, default=list, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
 
+    candidate: Mapped[CandidateRecord] = relationship(back_populates="courses")
+    job: Mapped[JobRecord] = relationship(back_populates="courses")
+    progress_entries: Mapped[list["LearningProgressRecord"]] = relationship(back_populates="course", cascade="all, delete-orphan")
+    module_rows: Mapped[list["CourseModuleRecord"]] = relationship(back_populates="course", cascade="all, delete-orphan")
+
 
 class ResumeRecord(Base):
     __tablename__ = "resumes"
@@ -190,6 +212,9 @@ class ResumeRecord(Base):
     evidence_references: Mapped[list] = mapped_column(JsonType, default=list, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
 
+    candidate: Mapped[CandidateRecord] = relationship(back_populates="resumes")
+    job: Mapped[JobRecord | None] = relationship(back_populates="resumes")
+
 
 class SubscriptionRecord(Base):
     __tablename__ = "subscriptions"
@@ -201,3 +226,62 @@ class SubscriptionRecord(Base):
     provider: Mapped[str] = mapped_column(String(64), default="demo", nullable=False)
     external_reference: Mapped[str | None] = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+
+    user: Mapped[UserRecord] = relationship(back_populates="subscriptions")
+
+
+class InterviewQuestionRecord(Base):
+    __tablename__ = "interview_questions"
+
+    id: Mapped[str] = mapped_column(UuidType, primary_key=True, default=uuid_str)
+    interview_id: Mapped[str] = mapped_column(UuidType, ForeignKey("interviews.id"), index=True, nullable=False)
+    sequence: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    question: Mapped[str] = mapped_column(Text, nullable=False)
+    competency: Mapped[str] = mapped_column(String(120), nullable=False)
+    difficulty: Mapped[str] = mapped_column(String(32), default="MEDIUM", nullable=False)
+    expected_signals: Mapped[list] = mapped_column(JsonType, default=list, nullable=False)
+
+    interview: Mapped[InterviewRecord] = relationship(back_populates="questions")
+
+
+class InterviewAnswerRecord(Base):
+    __tablename__ = "interview_answers"
+
+    id: Mapped[str] = mapped_column(UuidType, primary_key=True, default=uuid_str)
+    interview_id: Mapped[str] = mapped_column(UuidType, ForeignKey("interviews.id"), index=True, nullable=False)
+    question_id: Mapped[str] = mapped_column(UuidType, ForeignKey("interview_questions.id"), nullable=False)
+    answer: Mapped[str] = mapped_column(Text, nullable=False)
+    score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    strengths: Mapped[list] = mapped_column(JsonType, default=list, nullable=False)
+    weaknesses: Mapped[list] = mapped_column(JsonType, default=list, nullable=False)
+    feedback: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+
+    interview: Mapped[InterviewRecord] = relationship(back_populates="answers")
+
+
+class CourseModuleRecord(Base):
+    __tablename__ = "course_modules"
+
+    id: Mapped[str] = mapped_column(UuidType, primary_key=True, default=uuid_str)
+    course_id: Mapped[str] = mapped_column(UuidType, ForeignKey("courses.id"), index=True, nullable=False)
+    sequence: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    objective: Mapped[str] = mapped_column(Text, nullable=False)
+    content: Mapped[dict] = mapped_column(JsonType, default=dict, nullable=False)
+    challenge: Mapped[dict] = mapped_column(JsonType, default=dict, nullable=False)
+
+    course: Mapped[CourseRecord] = relationship(back_populates="module_rows")
+
+
+class LearningProgressRecord(Base):
+    __tablename__ = "learning_progress"
+
+    id: Mapped[str] = mapped_column(UuidType, primary_key=True, default=uuid_str)
+    course_id: Mapped[str] = mapped_column(UuidType, ForeignKey("courses.id"), index=True, nullable=False)
+    module_id: Mapped[str] = mapped_column(UuidType, ForeignKey("course_modules.id"), nullable=False)
+    completion_percent: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
+    assessment_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False)
+
+    course: Mapped[CourseRecord] = relationship(back_populates="progress_entries")

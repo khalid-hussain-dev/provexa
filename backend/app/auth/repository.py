@@ -11,10 +11,14 @@ from app.database.models import (
     CandidateRecord,
     CapabilityRecord,
     CourseRecord,
+    CourseModuleRecord,
     EvidenceRecord,
+    InterviewAnswerRecord,
+    InterviewQuestionRecord,
     InterviewRecord,
     JobRecord,
     JobRequirementRecord,
+    LearningProgressRecord,
     PasswordResetTokenRecord,
     ResumeRecord,
     RevokedTokenRecord,
@@ -151,7 +155,11 @@ def reset_user_repository() -> None:
         session.execute(delete(SubscriptionRecord))
         session.execute(delete(ResumeRecord))
         session.execute(delete(CourseRecord))
+        session.execute(delete(CourseModuleRecord))
+        session.execute(delete(LearningProgressRecord))
         session.execute(delete(InterviewRecord))
+        session.execute(delete(InterviewQuestionRecord))
+        session.execute(delete(InterviewAnswerRecord))
         session.execute(delete(AnalysisRecord))
         session.execute(delete(JobRequirementRecord))
         session.execute(delete(JobRecord))

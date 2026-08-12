@@ -8,7 +8,7 @@ Last updated: 2026-08-12
 - Current HEAD before this progress file: `579ffabc6d7a2c2d4f0a3d416d72f648a71fdd32`
 - Scope owner: `/backend/**`
 - Test command: `cd backend && pytest -q`
-- Latest test result: `16 passed`
+- Latest test result: `compileall passed`; runtime pytest unavailable in current shell because backend dev dependencies are not installed for the available Python runtime
 
 ## Implemented
 
@@ -41,6 +41,11 @@ Last updated: 2026-08-12
   - ORM tables for Platform Builder domain entities.
   - auth repository moved from in-memory store to SQLAlchemy persistence.
   - readiness now verifies database connectivity.
+- Redis/session foundation batch:
+  - `REDIS_URL` support in settings.
+  - transient cache abstraction with Redis backend and in-memory fallback.
+  - health/readiness now reports cache mode and Redis readiness state.
+  - lightweight JSON session/cache get/set/delete primitives.
 - Candidate/evidence API batch:
   - `GET /api/v1/candidate`
   - `PUT /api/v1/candidate`
@@ -62,13 +67,34 @@ Last updated: 2026-08-12
   - seeded demo jobs inside the backend
   - deterministic job scoring from candidate capabilities and evidence
   - route shadowing avoided with UUID path conversion
+- Interview API batch:
+  - `POST /api/v1/interviews`
+  - `POST /api/v1/interviews/{interview_id}/answer`
+  - `POST /api/v1/interviews/{interview_id}/complete`
+  - deterministic question generation from job requirements
+  - answer scoring, feedback, and completion verdicts
+  - ownership checks against the current candidate
+- Course API batch:
+  - `POST /api/v1/courses/generate`
+  - `GET /api/v1/courses/{course_id}`
+  - `POST /api/v1/courses/{course_id}/progress`
+  - generated course modules and progress tracking
+  - ownership checks against the current candidate
+- Resume API batch:
+  - `GET /api/v1/resumes/templates`
+  - `POST /api/v1/resumes/generate`
+  - template catalog and evidence-backed resume payloads
+- Subscription demo API batch:
+  - `POST /api/v1/subscription/checkout`
+  - `POST /api/v1/subscription/confirm`
+  - simulated checkout and activation flow
 
 ## Contract Drift / Known Issues
 
 - Auth response contract drift has been resolved in favor of `API_CONTRACTS.md`.
 - Migrations are not implemented yet; current hackathon foundation uses `Base.metadata.create_all`.
-- Redis is not implemented yet.
-- Job/interview/course/resume/subscription tables exist, but their APIs are not implemented yet.
+- Redis is implemented as a transient cache/session foundation with fallback, but not as full production deployment wiring.
+- Migration tooling is still not implemented.
 - Intelligence service is an interface/placeholder only; no deterministic demo stub is wired into API flows yet.
 
 ## Remaining Platform Builder Work
@@ -77,26 +103,12 @@ Last updated: 2026-08-12
   - migration tooling/commands
   - repository/service layers for non-auth domain models
 - Redis/cache/session foundation:
-  - `REDIS_URL`
-  - graceful local fallback
-  - readiness awareness
+  - production Redis deployment wiring
+  - cache/session invalidation strategy
+  - TTL and namespacing policy review
 - GitHub API demo boundary:
   - `POST /github/connect`
   - `POST /github/analyze`
-- Interviews API:
-  - `POST /interviews`
-  - `POST /interviews/{interview_id}/answer`
-  - `POST /interviews/{interview_id}/complete`
-- Courses API:
-  - `POST /courses/generate`
-  - `GET /courses/{course_id}`
-  - `POST /courses/{course_id}/progress`
-- Resumes API:
-  - `GET /resumes/templates`
-  - `POST /resumes/generate`
-- Subscription demo API:
-  - `POST /subscription/checkout`
-  - `POST /subscription/confirm`
 - Golden-path test:
   - signup/login
   - candidate
@@ -107,6 +119,7 @@ Last updated: 2026-08-12
   - interview
   - course
   - resume
+  - subscription checkout/confirm
 
 ## Implementation Order
 
@@ -115,7 +128,8 @@ Last updated: 2026-08-12
 3. Deterministic intelligence/demo service boundary for analysis, matching, interviews, courses, and resumes.
 4. Job APIs with seeded/demo provider fallback.
 5. Interview/course/resume/subscription APIs.
-6. Readiness checks, integration/golden-path tests, and final handoff report.
+6. Redis/session foundation and readiness checks.
+7. Integration/golden-path tests and final handoff report.
 
 ## Running Notes
 

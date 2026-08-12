@@ -21,10 +21,22 @@ class JsonFormatter(logging.Formatter):
 
 def redact(value: Any) -> Any:
     if isinstance(value, dict):
-        return {key: ("[REDACTED]" if key.lower() in SENSITIVE_KEYS else redact(item)) for key, item in value.items()}
+        sensitive_context = _contains_sensitive_key(value.get("loc"))
+        return {
+            key: "[REDACTED]"
+            if key.lower() in SENSITIVE_KEYS or (sensitive_context and key == "input")
+            else redact(item)
+            for key, item in value.items()
+        }
     if isinstance(value, list):
         return [redact(item) for item in value]
     return value
+
+
+def _contains_sensitive_key(value: Any) -> bool:
+    if isinstance(value, (list, tuple)):
+        return any(isinstance(item, str) and item.lower() in SENSITIVE_KEYS for item in value)
+    return isinstance(value, str) and value.lower() in SENSITIVE_KEYS
 
 
 def configure_logging(level: str = "INFO") -> None:

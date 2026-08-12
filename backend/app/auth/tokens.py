@@ -2,6 +2,7 @@ import base64
 import hashlib
 import hmac
 import json
+import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
@@ -11,12 +12,18 @@ from app.core.errors import AuthenticationError
 _HEADER = {"alg": "HS256", "typ": "JWT"}
 
 
-def create_access_token(subject: str, settings: Settings, claims: dict[str, Any] | None = None) -> str:
+def create_access_token(
+    subject: str,
+    settings: Settings,
+    claims: dict[str, Any] | None = None,
+    expires_minutes: int | None = None,
+) -> str:
     now = datetime.now(timezone.utc)
     payload: dict[str, Any] = {
         "sub": subject,
+        "jti": secrets.token_urlsafe(16),
         "iat": int(now.timestamp()),
-        "exp": int((now + timedelta(minutes=settings.jwt_access_token_minutes)).timestamp()),
+        "exp": int((now + timedelta(minutes=expires_minutes or settings.jwt_access_token_minutes)).timestamp()),
     }
     if claims:
         payload.update(claims)
@@ -48,6 +55,29 @@ def decode_access_token(token: str, settings: Settings) -> dict[str, Any]:
     if not payload.get("sub"):
         raise AuthenticationError("Invalid access token")
     return payload
+
+
+def create_pending_2fa_token(subject: str, settings: Settings) -> str:
+    return create_access_token(
+        subject,
+        settings,
+        {"purpose": "2fa_pending"},
+        expires_minutes=settings.pending_2fa_token_minutes,
+    )
+
+
+def require_token_purpose(payload: dict[str, Any], purpose: str) -> None:
+    if payload.get("purpose") != purpose:
+        raise AuthenticationError("Invalid access token")
+
+
+def hash_opaque_token(token: str, settings: Settings) -> str:
+    digest = hmac.new(settings.jwt_secret_key.encode("utf-8"), token.encode("utf-8"), hashlib.sha256).digest()
+    return _b64_encode(digest)
+
+
+def new_opaque_token() -> str:
+    return secrets.token_urlsafe(32)
 
 
 def _b64_json(value: dict[str, Any]) -> str:

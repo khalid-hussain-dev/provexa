@@ -48,13 +48,20 @@ Last updated: 2026-08-12
   - candidate ownership via authenticated user
   - evidence stored with source-type validation and `CLAIMED` default status
   - validation envelope hardened for non-serializable Pydantic error context
+- Analysis API batch:
+  - `POST /api/v1/analysis/candidate`
+  - `POST /api/v1/analysis/job`
+  - `POST /api/v1/analysis/match`
+  - deterministic capability extraction from evidence text
+  - deterministic job requirement extraction from job descriptions
+  - persisted analysis snapshots and not-found handling for unknown jobs
 
 ## Contract Drift / Known Issues
 
 - Auth response contract drift has been resolved in favor of `API_CONTRACTS.md`.
 - Migrations are not implemented yet; current hackathon foundation uses `Base.metadata.create_all`.
 - Redis is not implemented yet.
-- Job/analysis/interview/course/resume/subscription tables exist, but their APIs are not implemented yet.
+- Job/interview/course/resume/subscription tables exist, but their APIs are not implemented yet.
 - Intelligence service is an interface/placeholder only; no deterministic demo stub is wired into API flows yet.
 
 ## Remaining Platform Builder Work
@@ -67,9 +74,6 @@ Last updated: 2026-08-12
   - graceful local fallback
   - readiness awareness
 - Analysis API:
-  - `POST /analysis/candidate`
-  - `POST /analysis/job`
-  - `POST /analysis/match`
 - GitHub API demo boundary:
   - `POST /github/connect`
   - `POST /github/analyze`

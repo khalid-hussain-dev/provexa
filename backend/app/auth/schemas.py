@@ -44,10 +44,14 @@ class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class SignupResponse(BaseModel):
+    user_id: UUID
+    requires_2fa_setup: bool = False
+
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
-    user: UserResponse | None = None
     requires_2fa: bool = False
 
 
@@ -91,4 +95,3 @@ class TwoFactorVerifyResponse(BaseModel):
     authenticated: bool
     access_token: str
     token_type: str = "bearer"
-    user: UserResponse

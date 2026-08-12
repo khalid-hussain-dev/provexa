@@ -11,17 +11,16 @@ def _client() -> TestClient:
     return TestClient(create_app())
 
 
-def test_signup_returns_user_and_access_token() -> None:
+def test_signup_returns_contract_response() -> None:
     client = _client()
 
-    response = client.post("/api/v1/auth/signup", json={"email": "User@Example.com", "password": "strong-password"})
+    response = client.post("/api/v1/auth/signup", json={"name": "Khalid", "email": "User@Example.com", "password": "strong-password"})
 
     assert response.status_code == 201
     body = response.json()
-    assert body["token_type"] == "bearer"
-    assert body["access_token"]
-    assert body["user"]["email"] == "user@example.com"
-    assert "password" not in body["user"]
+    assert set(body) == {"user_id", "requires_2fa_setup"}
+    assert body["user_id"]
+    assert body["requires_2fa_setup"] is False
 
 
 def test_login_returns_access_token_for_valid_credentials() -> None:
@@ -62,8 +61,9 @@ def test_duplicate_signup_uses_conflict_error_envelope() -> None:
 
 def test_current_user_requires_and_accepts_bearer_token() -> None:
     client = _client()
-    signup = client.post("/api/v1/auth/signup", json={"email": "user@example.com", "password": "strong-password"})
-    token = signup.json()["access_token"]
+    client.post("/api/v1/auth/signup", json={"email": "user@example.com", "password": "strong-password"})
+    login = client.post("/api/v1/auth/login", json={"email": "user@example.com", "password": "strong-password"})
+    token = login.json()["access_token"]
 
     missing = client.get("/api/v1/auth/me")
     assert missing.status_code == 401
@@ -85,8 +85,9 @@ def test_current_user_rejects_invalid_bearer_token() -> None:
 
 def test_logout_revokes_current_token() -> None:
     client = _client()
-    signup = client.post("/api/v1/auth/signup", json={"email": "user@example.com", "password": "strong-password"})
-    token = signup.json()["access_token"]
+    client.post("/api/v1/auth/signup", json={"email": "user@example.com", "password": "strong-password"})
+    login = client.post("/api/v1/auth/login", json={"email": "user@example.com", "password": "strong-password"})
+    token = login.json()["access_token"]
 
     logout = client.post("/api/v1/auth/logout", headers={"Authorization": f"Bearer {token}"})
     assert logout.status_code == 200
@@ -132,8 +133,9 @@ def test_forgot_password_does_not_disclose_missing_accounts() -> None:
 
 def test_two_factor_setup_and_login_verification_flow() -> None:
     client = _client()
-    signup = client.post("/api/v1/auth/signup", json={"email": "user@example.com", "password": "strong-password"})
-    token = signup.json()["access_token"]
+    client.post("/api/v1/auth/signup", json={"email": "user@example.com", "password": "strong-password"})
+    login = client.post("/api/v1/auth/login", json={"email": "user@example.com", "password": "strong-password"})
+    token = login.json()["access_token"]
 
     setup = client.post("/api/v1/auth/2fa/setup", headers={"Authorization": f"Bearer {token}"})
     assert setup.status_code == 200
@@ -147,12 +149,11 @@ def test_two_factor_setup_and_login_verification_flow() -> None:
     )
     assert verify_setup.status_code == 200
     assert verify_setup.json()["authenticated"] is True
-    assert verify_setup.json()["user"]["two_factor_enabled"] is True
+    assert verify_setup.json()["access_token"]
 
     pending_login = client.post("/api/v1/auth/login", json={"email": "user@example.com", "password": "strong-password"})
     assert pending_login.status_code == 200
     assert pending_login.json()["requires_2fa"] is True
-    assert pending_login.json()["user"] is None
 
     pending_token = pending_login.json()["access_token"]
     blocked = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {pending_token}"})
@@ -165,13 +166,14 @@ def test_two_factor_setup_and_login_verification_flow() -> None:
     )
     assert final.status_code == 200
     assert final.json()["access_token"]
-    assert final.json()["user"]["email"] == "user@example.com"
+    assert final.json()["authenticated"] is True
 
 
 def test_two_factor_rejects_invalid_code() -> None:
     client = _client()
-    signup = client.post("/api/v1/auth/signup", json={"email": "user@example.com", "password": "strong-password"})
-    token = signup.json()["access_token"]
+    client.post("/api/v1/auth/signup", json={"email": "user@example.com", "password": "strong-password"})
+    login = client.post("/api/v1/auth/login", json={"email": "user@example.com", "password": "strong-password"})
+    token = login.json()["access_token"]
     setup = client.post("/api/v1/auth/2fa/setup", headers={"Authorization": f"Bearer {token}"})
 
     with SessionLocal() as session:

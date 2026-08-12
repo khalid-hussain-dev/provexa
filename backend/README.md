@@ -23,7 +23,7 @@ pytest
 
 - `GET /api/v1/health` - liveness check
 - `GET /api/v1/readiness` - readiness check
-- `POST /api/v1/auth/signup` - create an in-memory user and access token
+- `POST /api/v1/auth/signup` - create a user and return the contract signup status
 - `POST /api/v1/auth/login` - authenticate and issue an access token
 - `POST /api/v1/auth/logout` - revoke the current access token until expiry
 - `POST /api/v1/auth/forgot-password` - issue a password reset token

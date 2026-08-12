@@ -44,11 +44,7 @@ Last updated: 2026-08-12
 
 ## Contract Drift / Known Issues
 
-- `API_CONTRACTS.md` defines `POST /auth/signup` response as:
-  - `{"user_id":"uuid","requires_2fa_setup":false}`
-- Current implementation returns:
-  - `{"access_token":"...","token_type":"bearer","user":{...},"requires_2fa":false}`
-- This must be resolved before final integration. The safest final direction is to follow `API_CONTRACTS.md` and update tests/client expectations accordingly.
+- Auth response contract drift has been resolved in favor of `API_CONTRACTS.md`.
 - Migrations are not implemented yet; current hackathon foundation uses `Base.metadata.create_all`.
 - Redis is not implemented yet.
 - Candidate/evidence/job/etc. tables exist, but their APIs are not implemented yet.

@@ -13,6 +13,7 @@ from app.auth.schemas import (
     ResetPasswordRequest,
     ResetPasswordResponse,
     SignupRequest,
+    SignupResponse,
     TokenResponse,
     TwoFactorSetupResponse,
     TwoFactorVerifyRequest,
@@ -26,15 +27,13 @@ from app.core.config import Settings, get_settings
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/signup", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/signup", response_model=SignupResponse, status_code=status.HTTP_201_CREATED)
 def signup(
     payload: SignupRequest,
     repository: UserRepository = Depends(get_user_repository),
-    settings: Settings = Depends(get_settings),
-) -> TokenResponse:
+) -> SignupResponse:
     user = AuthService(repository).signup(payload.email, payload.password, payload.name)
-    token = create_access_token(str(user.id), settings, {"email": user.email})
-    return TokenResponse(access_token=token, user=UserResponse.model_validate(user))
+    return SignupResponse(user_id=user.id, requires_2fa_setup=False)
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -46,9 +45,9 @@ def login(
     user = AuthService(repository).authenticate(payload.email, payload.password)
     if user.two_factor_enabled:
         token = create_pending_2fa_token(str(user.id), settings)
-        return TokenResponse(access_token=token, user=None, requires_2fa=True)
+        return TokenResponse(access_token=token, requires_2fa=True)
     token = create_access_token(str(user.id), settings, {"email": user.email})
-    return TokenResponse(access_token=token, user=UserResponse.model_validate(user))
+    return TokenResponse(access_token=token)
 
 
 @router.post("/logout", response_model=LogoutResponse)
@@ -108,7 +107,6 @@ def verify_two_factor(
     return TwoFactorVerifyResponse(
         authenticated=True,
         access_token=token,
-        user=UserResponse.model_validate(user),
     )
 
 

@@ -10,6 +10,8 @@ class Settings(BaseModel):
     api_v1_prefix: str = "/api/v1"
     log_level: str = "INFO"
     cors_origins: list[str] = ["http://localhost:3000"]
+    jwt_secret_key: str = "dev-only-change-me"
+    jwt_access_token_minutes: int = 30
 
     @property
     def is_development(self) -> bool:
@@ -28,6 +30,15 @@ def _parse_csv(value: str | None, default: list[str]) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
+def _parse_int(value: str | None, default: int) -> int:
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except ValueError:
+        return default
+
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings(
@@ -36,4 +47,6 @@ def get_settings() -> Settings:
         app_debug=_parse_bool(os.getenv("APP_DEBUG"), False),
         log_level=os.getenv("LOG_LEVEL", "INFO"),
         cors_origins=_parse_csv(os.getenv("CORS_ORIGINS"), ["http://localhost:3000"]),
+        jwt_secret_key=os.getenv("JWT_SECRET_KEY", "dev-only-change-me"),
+        jwt_access_token_minutes=_parse_int(os.getenv("JWT_ACCESS_TOKEN_MINUTES"), 30),
     )

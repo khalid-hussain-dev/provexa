@@ -34,6 +34,13 @@ Last updated: 2026-08-12
   - password hashing
   - in-memory auth repository
 - Auth and platform tests.
+- Database/persistence foundation batch:
+  - SQLAlchemy database layer.
+  - PostgreSQL-ready `DATABASE_URL`.
+  - local SQLite fallback for development/test.
+  - ORM tables for Platform Builder domain entities.
+  - auth repository moved from in-memory store to SQLAlchemy persistence.
+  - readiness now verifies database connectivity.
 
 ## Contract Drift / Known Issues
 
@@ -42,18 +49,16 @@ Last updated: 2026-08-12
 - Current implementation returns:
   - `{"access_token":"...","token_type":"bearer","user":{...},"requires_2fa":false}`
 - This must be resolved before final integration. The safest final direction is to follow `API_CONTRACTS.md` and update tests/client expectations accordingly.
-- Auth currently uses an in-memory repository. It must move behind persistent storage.
-- Readiness is static and does not yet check database/Redis.
+- Migrations are not implemented yet; current hackathon foundation uses `Base.metadata.create_all`.
+- Redis is not implemented yet.
+- Candidate/evidence/job/etc. tables exist, but their APIs are not implemented yet.
 - Intelligence service is an interface/placeholder only; no deterministic demo stub is wired into API flows yet.
 
 ## Remaining Platform Builder Work
 
 - Database/persistence foundation:
-  - SQLAlchemy or equivalent ORM/data access layer
-  - PostgreSQL-ready `DATABASE_URL`
-  - local/test fallback
-  - user persistence
-  - candidate/evidence/job/analysis/interview/course/resume/subscription persistence
+  - migration tooling/commands
+  - repository/service layers for non-auth domain models
 - Redis/cache/session foundation:
   - `REDIS_URL`
   - graceful local fallback

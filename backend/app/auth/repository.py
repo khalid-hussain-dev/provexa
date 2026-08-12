@@ -1,6 +1,13 @@
 from typing import Protocol
 from datetime import datetime, timezone
+from uuid import UUID
 
+from fastapi import Depends
+from sqlalchemy import delete, select
+from sqlalchemy.orm import Session
+
+from app.database.models import PasswordResetTokenRecord, RevokedTokenRecord, UserRecord
+from app.database.session import SessionLocal, get_db_session, init_database
 from app.auth.models import User
 
 
@@ -22,70 +29,112 @@ class UserRepository(Protocol):
     def is_token_revoked(self, token_id: str) -> bool: ...
 
 
-class InMemoryUserRepository:
-    """Temporary auth store until the database foundation batch replaces it."""
-
-    def __init__(self) -> None:
-        self._users_by_email: dict[str, User] = {}
-        self._users_by_id: dict[str, User] = {}
-        self._password_reset_tokens: dict[str, tuple[str, datetime]] = {}
-        self._revoked_tokens: dict[str, datetime] = {}
+class SqlAlchemyUserRepository:
+    def __init__(self, session: Session) -> None:
+        self._session = session
 
     def get_by_email(self, email: str) -> User | None:
-        return self._users_by_email.get(email.lower())
+        record = self._session.scalar(select(UserRecord).where(UserRecord.email == email.lower()))
+        return _to_user(record) if record else None
 
     def get_by_id(self, user_id: str) -> User | None:
-        return self._users_by_id.get(user_id)
+        record = self._session.get(UserRecord, user_id)
+        return _to_user(record) if record else None
 
     def create(self, user: User) -> User:
-        self._users_by_email[user.email.lower()] = user
-        self._users_by_id[str(user.id)] = user
+        record = UserRecord(
+            id=str(user.id),
+            name=user.name,
+            email=user.email.lower(),
+            password_hash=user.password_hash,
+            two_factor_enabled=user.two_factor_enabled,
+            two_factor_secret=user.two_factor_secret,
+            is_active=user.is_active,
+            created_at=user.created_at,
+            updated_at=user.updated_at,
+        )
+        self._session.add(record)
+        self._session.commit()
+        self._session.refresh(record)
         return user
 
     def update(self, user: User) -> User:
         user.updated_at = datetime.now(timezone.utc)
-        self._users_by_email[user.email.lower()] = user
-        self._users_by_id[str(user.id)] = user
+        record = self._session.get(UserRecord, str(user.id))
+        if record is None:
+            record = UserRecord(id=str(user.id), email=user.email.lower(), password_hash=user.password_hash)
+            self._session.add(record)
+        record.name = user.name
+        record.email = user.email.lower()
+        record.password_hash = user.password_hash
+        record.two_factor_enabled = user.two_factor_enabled
+        record.two_factor_secret = user.two_factor_secret
+        record.is_active = user.is_active
+        record.updated_at = user.updated_at
+        self._session.commit()
         return user
 
     def store_password_reset_token(self, token_hash: str, user_id: str, expires_at: datetime) -> None:
-        self._password_reset_tokens[token_hash] = (user_id, expires_at)
+        self._session.merge(PasswordResetTokenRecord(token_hash=token_hash, user_id=user_id, expires_at=expires_at))
+        self._session.commit()
 
     def consume_password_reset_token(self, token_hash: str) -> User | None:
-        token_record = self._password_reset_tokens.pop(token_hash, None)
-        if token_record is None:
+        record = self._session.get(PasswordResetTokenRecord, token_hash)
+        if record is None:
             return None
 
-        user_id, expires_at = token_record
+        user_id = record.user_id
+        expires_at = _aware(record.expires_at)
+        self._session.delete(record)
+        self._session.commit()
         if expires_at < datetime.now(timezone.utc):
             return None
         return self.get_by_id(user_id)
 
     def revoke_token(self, token_id: str, expires_at: datetime) -> None:
-        self._revoked_tokens[token_id] = expires_at
+        self._session.merge(RevokedTokenRecord(token_id=token_id, expires_at=expires_at))
+        self._session.commit()
 
     def is_token_revoked(self, token_id: str) -> bool:
-        expires_at = self._revoked_tokens.get(token_id)
-        if expires_at is None:
+        record = self._session.get(RevokedTokenRecord, token_id)
+        if record is None:
             return False
+        expires_at = _aware(record.expires_at)
         if expires_at < datetime.now(timezone.utc):
-            self._revoked_tokens.pop(token_id, None)
+            self._session.delete(record)
+            self._session.commit()
             return False
         return True
 
-    def clear(self) -> None:
-        self._users_by_email.clear()
-        self._users_by_id.clear()
-        self._password_reset_tokens.clear()
-        self._revoked_tokens.clear()
+
+def _to_user(record: UserRecord) -> User:
+    return User(
+        id=UUID(str(record.id)),
+        name=record.name,
+        email=record.email,
+        password_hash=record.password_hash,
+        two_factor_enabled=record.two_factor_enabled,
+        two_factor_secret=record.two_factor_secret,
+        is_active=record.is_active,
+        created_at=_aware(record.created_at),
+        updated_at=_aware(record.updated_at),
+    )
 
 
-_user_repository = InMemoryUserRepository()
+def _aware(value: datetime) -> datetime:
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value
 
 
-def get_user_repository() -> UserRepository:
-    return _user_repository
+def get_user_repository(session: Session = Depends(get_db_session)) -> UserRepository:
+    return SqlAlchemyUserRepository(session)
 
 
 def reset_user_repository() -> None:
-    _user_repository.clear()
+    init_database()
+    with SessionLocal() as session:
+        session.execute(delete(PasswordResetTokenRecord))
+        session.execute(delete(RevokedTokenRecord))
+        session.execute(delete(UserRecord))
+        session.commit()

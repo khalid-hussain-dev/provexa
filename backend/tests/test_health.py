@@ -18,4 +18,5 @@ def test_readiness_endpoint_returns_ready() -> None:
     response = client.get("/api/v1/readiness")
 
     assert response.status_code == 200
-    assert response.json() == {"status": "ready"}
+    assert response.json()["status"] == "ready"
+    assert response.json()["dependencies"]["database"] == "ready"

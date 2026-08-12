@@ -1,7 +1,8 @@
 from fastapi.testclient import TestClient
 
-from app.auth.repository import get_user_repository, reset_user_repository
+from app.auth.repository import SqlAlchemyUserRepository, reset_user_repository
 from app.auth.two_factor import generate_totp_code
+from app.database.session import SessionLocal
 from app.main import create_app
 
 
@@ -173,7 +174,8 @@ def test_two_factor_rejects_invalid_code() -> None:
     token = signup.json()["access_token"]
     setup = client.post("/api/v1/auth/2fa/setup", headers={"Authorization": f"Bearer {token}"})
 
-    assert get_user_repository().get_by_email("user@example.com") is not None
+    with SessionLocal() as session:
+        assert SqlAlchemyUserRepository(session).get_by_email("user@example.com") is not None
     valid_code = generate_totp_code(setup.json()["secret"])
     invalid_code = "000000" if valid_code != "000000" else "111111"
     response = client.post(

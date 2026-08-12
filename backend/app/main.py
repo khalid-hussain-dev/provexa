@@ -9,6 +9,7 @@ from app.api.v1.router import api_router
 from app.core.config import get_settings
 from app.core.exception_handlers import register_exception_handlers
 from app.core.logging import configure_logging
+from app.database.session import init_database
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     logger.info("backend startup", extra={"extra_fields": {"app_env": settings.app_env}})
+    init_database()
     yield
     logger.info("backend shutdown")
 

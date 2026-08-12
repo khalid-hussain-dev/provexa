@@ -10,6 +10,8 @@ class Settings(BaseModel):
     api_v1_prefix: str = "/api/v1"
     log_level: str = "INFO"
     cors_origins: list[str] = ["http://localhost:3000"]
+    database_url: str = "sqlite:///./provexa_dev.db"
+    redis_url: str | None = None
     jwt_secret_key: str = "dev-only-change-me"
     jwt_access_token_minutes: int = 30
     pending_2fa_token_minutes: int = 5
@@ -49,7 +51,9 @@ def get_settings() -> Settings:
         app_debug=_parse_bool(os.getenv("APP_DEBUG"), False),
         log_level=os.getenv("LOG_LEVEL", "INFO"),
         cors_origins=_parse_csv(os.getenv("CORS_ORIGINS"), ["http://localhost:3000"]),
-        jwt_secret_key=os.getenv("JWT_SECRET_KEY", "dev-only-change-me"),
+        database_url=os.getenv("DATABASE_URL", "sqlite:///./provexa_dev.db"),
+        redis_url=os.getenv("REDIS_URL"),
+        jwt_secret_key=os.getenv("JWT_SECRET") or os.getenv("JWT_SECRET_KEY", "dev-only-change-me"),
         jwt_access_token_minutes=_parse_int(os.getenv("JWT_ACCESS_TOKEN_MINUTES"), 30),
         pending_2fa_token_minutes=_parse_int(os.getenv("PENDING_2FA_TOKEN_MINUTES"), 5),
         password_reset_token_minutes=_parse_int(os.getenv("PASSWORD_RESET_TOKEN_MINUTES"), 30),

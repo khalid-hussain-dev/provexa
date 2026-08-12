@@ -1,0 +1,706 @@
+﻿{
+    "manifest_version":  "1.0",
+    "generated_at_utc":  "2026-08-12T20:35:40.4991737Z",
+    "workspace":  "E:\\PROVEXA\\integration-workspace",
+    "selected_source_repository":  {
+                                       "path":  "E:\\PROVEXA\\.provexa-review",
+                                       "role":  "Platform and Intelligence source used for copy",
+                                       "commit":  "290e9be684993bf8a743afdfc2b0f444804505c8",
+                                       "branch":  "main",
+                                       "clean":  true,
+                                       "status_entries":  [
+
+                                                          ]
+                                   },
+    "related_intelligence_repository":  {
+                                            "path":  "E:\\PROVEXA\\crew-provexa",
+                                            "role":  "Related original Intelligence repository; not used as copy source",
+                                            "commit":  "7be2dee3a05b8a1f544da49207369134df586445",
+                                            "branch":  "mohib",
+                                            "clean":  false,
+                                            "status_entries":  [
+                                                                   "?? progress.md"
+                                                               ]
+                                        },
+    "exclusions":  [
+                       ".git directories",
+                       ".env and .env.* files",
+                       "secrets and key/certificate files",
+                       "Python bytecode and logs",
+                       "database files and generated runtime data",
+                       "__pycache__, pytest/mypy/ruff caches",
+                       "virtual environments",
+                       "uploads, build, dist, htmlcov, node_modules",
+                       "*.egg-info generated metadata"
+                   ],
+    "modules":  [
+                    {
+                        "name":  "backend",
+                        "source_path":  "E:\\PROVEXA\\.provexa-review\\backend",
+                        "destination_path":  "E:\\PROVEXA\\integration-workspace\\backend",
+                        "source_commit":  "290e9be684993bf8a743afdfc2b0f444804505c8",
+                        "source_repository_clean":  true,
+                        "file_count":  71,
+                        "total_bytes":  152686,
+                        "all_files_verified":  true,
+                        "files":  [
+                                      {
+                                          "relative_path":  ".gitignore",
+                                          "size_bytes":  69,
+                                          "source_sha256":  "BFB3DDA4B97BB7FF51B9695CFE0ED27F622DB55106E8622A729A4961FF45A218",
+                                          "copied_sha256":  "BFB3DDA4B97BB7FF51B9695CFE0ED27F622DB55106E8622A729A4961FF45A218",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "pyproject.toml",
+                                          "size_bytes":  516,
+                                          "source_sha256":  "A258DC6C9833E0A030AE6C9EF18A955A7C45E3A527D95DBFAEE6DC37CB03B49A",
+                                          "copied_sha256":  "A258DC6C9833E0A030AE6C9EF18A955A7C45E3A527D95DBFAEE6DC37CB03B49A",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "README.md",
+                                          "size_bytes":  1726,
+                                          "source_sha256":  "244C75246A8F04D1ED0B8932A7C2F56C0940EFE01B687926AF5EA9F0F521805C",
+                                          "copied_sha256":  "244C75246A8F04D1ED0B8932A7C2F56C0940EFE01B687926AF5EA9F0F521805C",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/main.py",
+                                          "size_bytes":  1322,
+                                          "source_sha256":  "D4BAD6BA2DEC641C257F24655BDB840F80071A1E5AAE61C72889A7944CE55751",
+                                          "copied_sha256":  "D4BAD6BA2DEC641C257F24655BDB840F80071A1E5AAE61C72889A7944CE55751",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/__init__.py",
+                                          "size_bytes":  44,
+                                          "source_sha256":  "9C2B9557BDBE40E231A9C4B330EA86085181B89881511B20CB6B7F1029675E16",
+                                          "copied_sha256":  "9C2B9557BDBE40E231A9C4B330EA86085181B89881511B20CB6B7F1029675E16",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/analysis/schemas.py",
+                                          "size_bytes":  918,
+                                          "source_sha256":  "4F2B39135085FCC6172BED2EB8912087BAC18D0C0F313FC01099543247547BCB",
+                                          "copied_sha256":  "4F2B39135085FCC6172BED2EB8912087BAC18D0C0F313FC01099543247547BCB",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/analysis/service.py",
+                                          "size_bytes":  8287,
+                                          "source_sha256":  "C7432FFA9D4C9C2C21AFD644788818705388C30B04F7867D8F4BEEE0071BF179",
+                                          "copied_sha256":  "C7432FFA9D4C9C2C21AFD644788818705388C30B04F7867D8F4BEEE0071BF179",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/analysis/__init__.py",
+                                          "size_bytes":  31,
+                                          "source_sha256":  "A2EB58BD7570193CD329220D9B2E4EE98E0863AE48E8A3C9E52467E5B88B1C7E",
+                                          "copied_sha256":  "A2EB58BD7570193CD329220D9B2E4EE98E0863AE48E8A3C9E52467E5B88B1C7E",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/__init__.py",
+                                          "size_bytes":  20,
+                                          "source_sha256":  "5B96D03591B3D982CC5F1D610BD7BF78A85B7FF18D155632DCC0B70FB82E8147",
+                                          "copied_sha256":  "5B96D03591B3D982CC5F1D610BD7BF78A85B7FF18D155632DCC0B70FB82E8147",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/v1/analysis.py",
+                                          "size_bytes":  1849,
+                                          "source_sha256":  "77A0E506844310B17682062C90051178494EF28380DA4682C29697356BC3E22A",
+                                          "copied_sha256":  "77A0E506844310B17682062C90051178494EF28380DA4682C29697356BC3E22A",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/v1/auth.py",
+                                          "size_bytes":  4490,
+                                          "source_sha256":  "226A1107D38E2677E171E1D1C9429D482810FD8FC58EE845C38647DEF3BE5A39",
+                                          "copied_sha256":  "226A1107D38E2677E171E1D1C9429D482810FD8FC58EE845C38647DEF3BE5A39",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/v1/candidate.py",
+                                          "size_bytes":  2404,
+                                          "source_sha256":  "7562204F266AEC0BD19F318D14EEAB7B786FDE68C4728EC4F131A0F4DC6F9FDD",
+                                          "copied_sha256":  "7562204F266AEC0BD19F318D14EEAB7B786FDE68C4728EC4F131A0F4DC6F9FDD",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/v1/courses.py",
+                                          "size_bytes":  4154,
+                                          "source_sha256":  "95B56AAE6E4B81D533738A6162AB3AE88155D9CB52550A81C8918B0193D9F7E5",
+                                          "copied_sha256":  "95B56AAE6E4B81D533738A6162AB3AE88155D9CB52550A81C8918B0193D9F7E5",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/v1/health.py",
+                                          "size_bytes":  747,
+                                          "source_sha256":  "B7B03609757ED7B7D459719C1C227D70B549F45564D446D2FC6DB50AE8FAE715",
+                                          "copied_sha256":  "B7B03609757ED7B7D459719C1C227D70B549F45564D446D2FC6DB50AE8FAE715",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/v1/interviews.py",
+                                          "size_bytes":  3484,
+                                          "source_sha256":  "69CB46F517026BAAE207F1777D1906EBFA0F3EA3960FBC8E770F937E40BDF6CE",
+                                          "copied_sha256":  "69CB46F517026BAAE207F1777D1906EBFA0F3EA3960FBC8E770F937E40BDF6CE",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/v1/jobs.py",
+                                          "size_bytes":  3625,
+                                          "source_sha256":  "C0F0D07437BE90D54CE39D6D0D1E62C3C0BCA7721FAA0D0EEC461779F5C0FE52",
+                                          "copied_sha256":  "C0F0D07437BE90D54CE39D6D0D1E62C3C0BCA7721FAA0D0EEC461779F5C0FE52",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/v1/resumes.py",
+                                          "size_bytes":  1669,
+                                          "source_sha256":  "63305107733F5E19E4D185759948FDEF854385AEB5D9B69663EDA8BA61A1AC1E",
+                                          "copied_sha256":  "63305107733F5E19E4D185759948FDEF854385AEB5D9B69663EDA8BA61A1AC1E",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/v1/router.py",
+                                          "size_bytes":  951,
+                                          "source_sha256":  "F7DA724756CA3314A049F1DDCCA3672CA3011A68E7072FE8FF123E277BF2C277",
+                                          "copied_sha256":  "F7DA724756CA3314A049F1DDCCA3672CA3011A68E7072FE8FF123E277BF2C277",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/v1/subscription.py",
+                                          "size_bytes":  1321,
+                                          "source_sha256":  "A393484A45062CD0601D063DDC6C3BB7ED536788DE9DFC2194C97740B341986A",
+                                          "copied_sha256":  "A393484A45062CD0601D063DDC6C3BB7ED536788DE9DFC2194C97740B341986A",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/api/v1/__init__.py",
+                                          "size_bytes":  30,
+                                          "source_sha256":  "F4EF320F3E3E25325140E602130E19A9588C32642F643BE89A72FFFE7ADC1A72",
+                                          "copied_sha256":  "F4EF320F3E3E25325140E602130E19A9588C32642F643BE89A72FFFE7ADC1A72",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/auth/dependencies.py",
+                                          "size_bytes":  2179,
+                                          "source_sha256":  "46B954A414276C3EFCCA88D026A553A20957B1323AB14A59D10CBB8DFC7EA012",
+                                          "copied_sha256":  "46B954A414276C3EFCCA88D026A553A20957B1323AB14A59D10CBB8DFC7EA012",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/auth/models.py",
+                                          "size_bytes":  1194,
+                                          "source_sha256":  "0EF578E6DB2B5D586720F1D7EA0AF3296F7F62D6EDDB44D4E2FA11F984CAE56A",
+                                          "copied_sha256":  "0EF578E6DB2B5D586720F1D7EA0AF3296F7F62D6EDDB44D4E2FA11F984CAE56A",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/auth/passwords.py",
+                                          "size_bytes":  891,
+                                          "source_sha256":  "AAE0BBCF490BF828A73E4850596F3CAEF46A21AA9B2BE97E44C0F40DE32F6C96",
+                                          "copied_sha256":  "AAE0BBCF490BF828A73E4850596F3CAEF46A21AA9B2BE97E44C0F40DE32F6C96",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/auth/README.md",
+                                          "size_bytes":  568,
+                                          "source_sha256":  "4267173DFEC063DFCA10DCFE9D5ED64771BD171FB5A482EB7A66BB5ECE757C7A",
+                                          "copied_sha256":  "4267173DFEC063DFCA10DCFE9D5ED64771BD171FB5A482EB7A66BB5ECE757C7A",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/auth/repository.py",
+                                          "size_bytes":  6056,
+                                          "source_sha256":  "62EADEE28B3010D9B7890056FE2E353CF2B854CA6E1E7AC55825515CA12094B8",
+                                          "copied_sha256":  "62EADEE28B3010D9B7890056FE2E353CF2B854CA6E1E7AC55825515CA12094B8",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/auth/schemas.py",
+                                          "size_bytes":  2446,
+                                          "source_sha256":  "107020CB98B5D479F1D968A2DDDB539EA113FC81BD899C6C41C1ACAB1B84C5F2",
+                                          "copied_sha256":  "107020CB98B5D479F1D968A2DDDB539EA113FC81BD899C6C41C1ACAB1B84C5F2",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/auth/service.py",
+                                          "size_bytes":  2931,
+                                          "source_sha256":  "CE307FD222B1BA74E873CD60CC1318DBBB65AB56CCC8EE7B92D23EF0A6294955",
+                                          "copied_sha256":  "CE307FD222B1BA74E873CD60CC1318DBBB65AB56CCC8EE7B92D23EF0A6294955",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/auth/tokens.py",
+                                          "size_bytes":  3231,
+                                          "source_sha256":  "BE2ED50AFAD80DD7E2421981F55C9B8EDC7B3450AC091D776503B02CE22054D2",
+                                          "copied_sha256":  "BE2ED50AFAD80DD7E2421981F55C9B8EDC7B3450AC091D776503B02CE22054D2",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/auth/two_factor.py",
+                                          "size_bytes":  1363,
+                                          "source_sha256":  "66F202BDFB3CA792370547951D7245B654FC6BAE3E3DB33865ADF631F53E16F2",
+                                          "copied_sha256":  "66F202BDFB3CA792370547951D7245B654FC6BAE3E3DB33865ADF631F53E16F2",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/auth/__init__.py",
+                                          "size_bytes":  42,
+                                          "source_sha256":  "4AD48778DB2FBB5E3AA5CD2132BE042F9859E89D7C3AFAB1EB3C158913FBEA39",
+                                          "copied_sha256":  "4AD48778DB2FBB5E3AA5CD2132BE042F9859E89D7C3AFAB1EB3C158913FBEA39",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/candidates/repository.py",
+                                          "size_bytes":  2335,
+                                          "source_sha256":  "E70102C9038621B2EEB26736FDA12C0AA383205E5931DDF71221D23B4C3565AB",
+                                          "copied_sha256":  "E70102C9038621B2EEB26736FDA12C0AA383205E5931DDF71221D23B4C3565AB",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/candidates/schemas.py",
+                                          "size_bytes":  1734,
+                                          "source_sha256":  "1A2CDE528A0CB8FF79C350163D872BE2AE4CDECC0AF94539D77F4298A6DD0F56",
+                                          "copied_sha256":  "1A2CDE528A0CB8FF79C350163D872BE2AE4CDECC0AF94539D77F4298A6DD0F56",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/candidates/__init__.py",
+                                          "size_bytes":  32,
+                                          "source_sha256":  "10BA6E1B3246B5FE061C1F3409489A8CFF743B94CC234B080DA3D5E99EEE1F2E",
+                                          "copied_sha256":  "10BA6E1B3246B5FE061C1F3409489A8CFF743B94CC234B080DA3D5E99EEE1F2E",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/core/cache.py",
+                                          "size_bytes":  3662,
+                                          "source_sha256":  "9C00FBCFEA0F7B78E99DE30041F355D32F8B1F0CAC0E0170C68D6F11433DEA5E",
+                                          "copied_sha256":  "9C00FBCFEA0F7B78E99DE30041F355D32F8B1F0CAC0E0170C68D6F11433DEA5E",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/core/config.py",
+                                          "size_bytes":  2407,
+                                          "source_sha256":  "6C53AC6689A092EE42E937C89A6ABCFA6BA1189E8298D7EAE9CB8E949A10BDFB",
+                                          "copied_sha256":  "6C53AC6689A092EE42E937C89A6ABCFA6BA1189E8298D7EAE9CB8E949A10BDFB",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/core/errors.py",
+                                          "size_bytes":  2102,
+                                          "source_sha256":  "92744A3CA236CAFDABA8C7F4279EFB99572CD52E0EB518562B171F834DCC27F2",
+                                          "copied_sha256":  "92744A3CA236CAFDABA8C7F4279EFB99572CD52E0EB518562B171F834DCC27F2",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/core/exception_handlers.py",
+                                          "size_bytes":  2696,
+                                          "source_sha256":  "9AF6F71275C916901B8571A1FD56FF3AAFC06154E16464984E17561EED5F21E5",
+                                          "copied_sha256":  "9AF6F71275C916901B8571A1FD56FF3AAFC06154E16464984E17561EED5F21E5",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/core/logging.py",
+                                          "size_bytes":  1811,
+                                          "source_sha256":  "5468688EE6B2E373749B152149894E70BC11CEDF7839E31C6C9EBB9AEE777628",
+                                          "copied_sha256":  "5468688EE6B2E373749B152149894E70BC11CEDF7839E31C6C9EBB9AEE777628",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/core/__init__.py",
+                                          "size_bytes":  35,
+                                          "source_sha256":  "58BB035E01B2E770FAD12FEF3C9E94795F6C69C36EDFA6C4851A8B495767AEA6",
+                                          "copied_sha256":  "58BB035E01B2E770FAD12FEF3C9E94795F6C69C36EDFA6C4851A8B495767AEA6",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/courses/schemas.py",
+                                          "size_bytes":  949,
+                                          "source_sha256":  "CDA7DC3DB567277186A1DBCA31180D6340463A0A11AC288C93898D01C6B802EA",
+                                          "copied_sha256":  "CDA7DC3DB567277186A1DBCA31180D6340463A0A11AC288C93898D01C6B802EA",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/courses/service.py",
+                                          "size_bytes":  5276,
+                                          "source_sha256":  "C3B4FE7C574AAE69E9AC1B142DAE46A761D25863516F81479E97E0659A37C469",
+                                          "copied_sha256":  "C3B4FE7C574AAE69E9AC1B142DAE46A761D25863516F81479E97E0659A37C469",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/courses/__init__.py",
+                                          "size_bytes":  1,
+                                          "source_sha256":  "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B",
+                                          "copied_sha256":  "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/database/models.py",
+                                          "size_bytes":  16794,
+                                          "source_sha256":  "FFA0DDEA1EA433AC1F38E85B17A8553AAF54EBA3EAFC2C094780361E50E675EF",
+                                          "copied_sha256":  "FFA0DDEA1EA433AC1F38E85B17A8553AAF54EBA3EAFC2C094780361E50E675EF",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/database/session.py",
+                                          "size_bytes":  911,
+                                          "source_sha256":  "75A3C0865D3F3C390A7163DA995DFD1722F3A3D8B55BA744D5EBEA1108B2B6DB",
+                                          "copied_sha256":  "75A3C0865D3F3C390A7163DA995DFD1722F3A3D8B55BA744D5EBEA1108B2B6DB",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/database/__init__.py",
+                                          "size_bytes":  124,
+                                          "source_sha256":  "E5E52FDCDA281C294C489247726845427D1C02890D8E57EFB4978C3047E80B76",
+                                          "copied_sha256":  "E5E52FDCDA281C294C489247726845427D1C02890D8E57EFB4978C3047E80B76",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/interviews/schemas.py",
+                                          "size_bytes":  996,
+                                          "source_sha256":  "6BAD1E18B8700FB0B406E1E50A1E234EFC62F71956CB22A9603A8733B15511F5",
+                                          "copied_sha256":  "6BAD1E18B8700FB0B406E1E50A1E234EFC62F71956CB22A9603A8733B15511F5",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/interviews/service.py",
+                                          "size_bytes":  10390,
+                                          "source_sha256":  "F98D94EF2330F19B09CB29A63D4ED4339E7780E76AC2376E8E2CCECE14CD6D0C",
+                                          "copied_sha256":  "F98D94EF2330F19B09CB29A63D4ED4339E7780E76AC2376E8E2CCECE14CD6D0C",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/interviews/__init__.py",
+                                          "size_bytes":  1,
+                                          "source_sha256":  "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B",
+                                          "copied_sha256":  "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/jobs/repository.py",
+                                          "size_bytes":  5006,
+                                          "source_sha256":  "025E006D2FEB2368A77A4C41D128E20E94020FB6E92CCAA7B518BDD919FB7D0A",
+                                          "copied_sha256":  "025E006D2FEB2368A77A4C41D128E20E94020FB6E92CCAA7B518BDD919FB7D0A",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/jobs/schemas.py",
+                                          "size_bytes":  1304,
+                                          "source_sha256":  "C96B8C437B26F673F83ACDC887C380A5A6F3A9F5F0B6A906B56B34981EF66472",
+                                          "copied_sha256":  "C96B8C437B26F673F83ACDC887C380A5A6F3A9F5F0B6A906B56B34981EF66472",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/jobs/service.py",
+                                          "size_bytes":  2883,
+                                          "source_sha256":  "B51A14A4C7A935A9626BE66F5D15D0F17AFA08D90C2517521AC09E3EB3C15B1E",
+                                          "copied_sha256":  "B51A14A4C7A935A9626BE66F5D15D0F17AFA08D90C2517521AC09E3EB3C15B1E",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/jobs/__init__.py",
+                                          "size_bytes":  26,
+                                          "source_sha256":  "D0297C089E92768C24569502EFFB76F7B764FF7F48A13DBE3F260E75F3ABCC89",
+                                          "copied_sha256":  "D0297C089E92768C24569502EFFB76F7B764FF7F48A13DBE3F260E75F3ABCC89",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/resumes/schemas.py",
+                                          "size_bytes":  547,
+                                          "source_sha256":  "8B23A57A4BBE030F949CD5D008892BA50ED1F3993BFB4CC6FE848D69C68B2B10",
+                                          "copied_sha256":  "8B23A57A4BBE030F949CD5D008892BA50ED1F3993BFB4CC6FE848D69C68B2B10",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/resumes/service.py",
+                                          "size_bytes":  2446,
+                                          "source_sha256":  "A64E12CF40BDF98EC8B31986494ACBC94B277B71F38092D4D8B77F52A07E1DFB",
+                                          "copied_sha256":  "A64E12CF40BDF98EC8B31986494ACBC94B277B71F38092D4D8B77F52A07E1DFB",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/resumes/__init__.py",
+                                          "size_bytes":  1,
+                                          "source_sha256":  "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B",
+                                          "copied_sha256":  "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/services/__init__.py",
+                                          "size_bytes":  33,
+                                          "source_sha256":  "A570632A51C3AE08E27FAEF2249212B31A6C03638CB0C66BE639E3F10D4A61DA",
+                                          "copied_sha256":  "A570632A51C3AE08E27FAEF2249212B31A6C03638CB0C66BE639E3F10D4A61DA",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/services/intelligence/interfaces.py",
+                                          "size_bytes":  1606,
+                                          "source_sha256":  "06F6E7244B5A06171A6E569ECCABE2827A6EA64B4B5EFF69C0C64FF378C4E8A1",
+                                          "copied_sha256":  "06F6E7244B5A06171A6E569ECCABE2827A6EA64B4B5EFF69C0C64FF378C4E8A1",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/services/intelligence/placeholders.py",
+                                          "size_bytes":  1551,
+                                          "source_sha256":  "BE6A5016A1B6B07A9848606FD21DA844055E6E4BDE5EEF092A5CCFE770991A13",
+                                          "copied_sha256":  "BE6A5016A1B6B07A9848606FD21DA844055E6E4BDE5EEF092A5CCFE770991A13",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/services/intelligence/__init__.py",
+                                          "size_bytes":  179,
+                                          "source_sha256":  "FFEC91DEF551FC5E959B099AB416D6A9897E376CD5AAB95ECA9476872F96E994",
+                                          "copied_sha256":  "FFEC91DEF551FC5E959B099AB416D6A9897E376CD5AAB95ECA9476872F96E994",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/subscription/schemas.py",
+                                          "size_bytes":  583,
+                                          "source_sha256":  "F6B0B51BDD66EE79FA8CFB0606C4374EB726B8381C61343BADCB63BF834232E6",
+                                          "copied_sha256":  "F6B0B51BDD66EE79FA8CFB0606C4374EB726B8381C61343BADCB63BF834232E6",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/subscription/service.py",
+                                          "size_bytes":  1525,
+                                          "source_sha256":  "8F68267053F0B0FCC2DCF66B14328E3D9490EC6E6B2BD460A602D43E6A549D9F",
+                                          "copied_sha256":  "8F68267053F0B0FCC2DCF66B14328E3D9490EC6E6B2BD460A602D43E6A549D9F",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "app/subscription/__init__.py",
+                                          "size_bytes":  1,
+                                          "source_sha256":  "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B",
+                                          "copied_sha256":  "01BA4719C80B6FE911B091A7C05124B64EEECE964E09C058EF8F9805DACA546B",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "tests/test_analysis.py",
+                                          "size_bytes":  3081,
+                                          "source_sha256":  "94592B72F0F65E8ED1AD8E4821F2FA3EE09FC718D683FD1F4527BC862B81904E",
+                                          "copied_sha256":  "94592B72F0F65E8ED1AD8E4821F2FA3EE09FC718D683FD1F4527BC862B81904E",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "tests/test_auth.py",
+                                          "size_bytes":  7611,
+                                          "source_sha256":  "A34CDC8B12C5ECA2252F766C956FACA8EB01AEA226F26572DEB3F5BEEC4808C4",
+                                          "copied_sha256":  "A34CDC8B12C5ECA2252F766C956FACA8EB01AEA226F26572DEB3F5BEEC4808C4",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "tests/test_cache_layer.py",
+                                          "size_bytes":  682,
+                                          "source_sha256":  "62E6E781CC3CD0CA19A7E3B5266E128227AC33608D5C61C7FAD532EE0DB0BFDF",
+                                          "copied_sha256":  "62E6E781CC3CD0CA19A7E3B5266E128227AC33608D5C61C7FAD532EE0DB0BFDF",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "tests/test_candidate.py",
+                                          "size_bytes":  2738,
+                                          "source_sha256":  "D6BE00B55CE34316D86F4A3BD0C35CB0CAF4C5462D7A54C2FBE836C1F09D489F",
+                                          "copied_sha256":  "D6BE00B55CE34316D86F4A3BD0C35CB0CAF4C5462D7A54C2FBE836C1F09D489F",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "tests/test_error_envelope.py",
+                                          "size_bytes":  1693,
+                                          "source_sha256":  "784A5C1307B388E71CB956DF14318B665215F2DD8E531EA151B2B5E42FD2D93D",
+                                          "copied_sha256":  "784A5C1307B388E71CB956DF14318B665215F2DD8E531EA151B2B5E42FD2D93D",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "tests/test_health.py",
+                                          "size_bytes":  606,
+                                          "source_sha256":  "9098A6AA44F0DAE74B742AD0BD97C13DFF5E07B545E44B0388ECE6D67C12D689",
+                                          "copied_sha256":  "9098A6AA44F0DAE74B742AD0BD97C13DFF5E07B545E44B0388ECE6D67C12D689",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "tests/test_jobs.py",
+                                          "size_bytes":  2521,
+                                          "source_sha256":  "8EE1B0C599BB6B19D85958A66AB1157441D1FB975A5667D56B6D5B583A4CA761",
+                                          "copied_sha256":  "8EE1B0C599BB6B19D85958A66AB1157441D1FB975A5667D56B6D5B583A4CA761",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "tests/test_phase3_platform_builder.py",
+                                          "size_bytes":  5249,
+                                          "source_sha256":  "6D98F1A23F16782D4DC1BB109DB630E3D38F2B269A38665BCEFDC268E5CE3BC9",
+                                          "copied_sha256":  "6D98F1A23F16782D4DC1BB109DB630E3D38F2B269A38665BCEFDC268E5CE3BC9",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "tests/__init__.py",
+                                          "size_bytes":  0,
+                                          "source_sha256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+                                          "copied_sha256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+                                          "verified":  true
+                                      }
+                                  ]
+                    },
+                    {
+                        "name":  "services",
+                        "source_path":  "E:\\PROVEXA\\.provexa-review\\services",
+                        "destination_path":  "E:\\PROVEXA\\integration-workspace\\services",
+                        "source_commit":  "290e9be684993bf8a743afdfc2b0f444804505c8",
+                        "source_repository_clean":  true,
+                        "file_count":  21,
+                        "total_bytes":  152185,
+                        "all_files_verified":  true,
+                        "files":  [
+                                      {
+                                          "relative_path":  ".gitignore",
+                                          "size_bytes":  431,
+                                          "source_sha256":  "12D738F9791A9C8F4112E8F3BC9E412639DF326035880DD0F146713886630EA0",
+                                          "copied_sha256":  "12D738F9791A9C8F4112E8F3BC9E412639DF326035880DD0F146713886630EA0",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "agents.py",
+                                          "size_bytes":  3709,
+                                          "source_sha256":  "9400075E0A6CC8241C31AECA49233B2640713843D06C05413B0D968410C4FF9B",
+                                          "copied_sha256":  "9400075E0A6CC8241C31AECA49233B2640713843D06C05413B0D968410C4FF9B",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "cli_interview.py",
+                                          "size_bytes":  14255,
+                                          "source_sha256":  "57A0398F89BDA5BE813BB2747BCFBA2B04CECCB2307FC2D3A4E66A764DAE16A1",
+                                          "copied_sha256":  "57A0398F89BDA5BE813BB2747BCFBA2B04CECCB2307FC2D3A4E66A764DAE16A1",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "config.py",
+                                          "size_bytes":  786,
+                                          "source_sha256":  "F95DABA928E6FFD3678E32E0C93B02792B2BB41D955FDCE1D3CB377C8DCEB833",
+                                          "copied_sha256":  "F95DABA928E6FFD3678E32E0C93B02792B2BB41D955FDCE1D3CB377C8DCEB833",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "course_crew.py",
+                                          "size_bytes":  10771,
+                                          "source_sha256":  "41E9B61F4FE3676523BA3F151B48A90A42C5A3C92311A18C35F8453417D574F8",
+                                          "copied_sha256":  "41E9B61F4FE3676523BA3F151B48A90A42C5A3C92311A18C35F8453417D574F8",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "example_usage.py",
+                                          "size_bytes":  5814,
+                                          "source_sha256":  "FA7F1645CA98E6729DD924B3D39D64EBF51B9C2DB3C4A63AD6E853E9E986CEB7",
+                                          "copied_sha256":  "FA7F1645CA98E6729DD924B3D39D64EBF51B9C2DB3C4A63AD6E853E9E986CEB7",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "interview_crew.py",
+                                          "size_bytes":  12509,
+                                          "source_sha256":  "96C2C10C24B85BA90EF3C7FF001B99F35C4C55F2977AC482FBF9259EB74F9C72",
+                                          "copied_sha256":  "96C2C10C24B85BA90EF3C7FF001B99F35C4C55F2977AC482FBF9259EB74F9C72",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "interview_system.py",
+                                          "size_bytes":  12936,
+                                          "source_sha256":  "2D3314CD26FD9029CE90E5F81AC0D1C436E50D7DA4B631CD17D1164F84C3CAFC",
+                                          "copied_sha256":  "2D3314CD26FD9029CE90E5F81AC0D1C436E50D7DA4B631CD17D1164F84C3CAFC",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "job_service.py",
+                                          "size_bytes":  10878,
+                                          "source_sha256":  "393086B8A86A72BBBB471D13280BC06AB7B6149E14514EB547B3D7057AE5FEEB",
+                                          "copied_sha256":  "393086B8A86A72BBBB471D13280BC06AB7B6149E14514EB547B3D7057AE5FEEB",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "main.py",
+                                          "size_bytes":  21648,
+                                          "source_sha256":  "6D269FC4AEF43AC12861572C120D0B16AFD50CD8BB52B8A785E5F28BDBD63CF0",
+                                          "copied_sha256":  "6D269FC4AEF43AC12861572C120D0B16AFD50CD8BB52B8A785E5F28BDBD63CF0",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "models.py",
+                                          "size_bytes":  3544,
+                                          "source_sha256":  "14FAF46DAC20F18B39170528BEF3D7AD1F6955F9847E6168045C77B360122F98",
+                                          "copied_sha256":  "14FAF46DAC20F18B39170528BEF3D7AD1F6955F9847E6168045C77B360122F98",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "profile_analysis_crew.py",
+                                          "size_bytes":  10794,
+                                          "source_sha256":  "0C03230C3DE39282B4E38E021C05079BE73CF08B4C9605E02E01CCB906D54161",
+                                          "copied_sha256":  "0C03230C3DE39282B4E38E021C05079BE73CF08B4C9605E02E01CCB906D54161",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "profile_analyzer.py",
+                                          "size_bytes":  8132,
+                                          "source_sha256":  "5BAC379BB9BA22E5C6FF965C5A0EC994323245ED77FB72CF9023788E1B0A3AC3",
+                                          "copied_sha256":  "5BAC379BB9BA22E5C6FF965C5A0EC994323245ED77FB72CF9023788E1B0A3AC3",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "progress.md",
+                                          "size_bytes":  7439,
+                                          "source_sha256":  "94B5E99DDAC5284913E566F7469ED7DEBD331BA05FA81933DE1B44130D2C5FFF",
+                                          "copied_sha256":  "94B5E99DDAC5284913E566F7469ED7DEBD331BA05FA81933DE1B44130D2C5FFF",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "README.md",
+                                          "size_bytes":  8367,
+                                          "source_sha256":  "BE07A03BE8D2ED9A5A3CAC7420231B5A7AACA09F1C957CE7B0209D321BECA252",
+                                          "copied_sha256":  "BE07A03BE8D2ED9A5A3CAC7420231B5A7AACA09F1C957CE7B0209D321BECA252",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "requirements.txt",
+                                          "size_bytes":  310,
+                                          "source_sha256":  "F3233A66E3F230A4A3698F998371CA043C92B42C8BE9A1D7BB9365A209CCAFB9",
+                                          "copied_sha256":  "F3233A66E3F230A4A3698F998371CA043C92B42C8BE9A1D7BB9365A209CCAFB9",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "requirements2.txt",
+                                          "size_bytes":  3715,
+                                          "source_sha256":  "93B403A043CFBFC9C754BF5336E7553F02850E47F93D0B3C7F7EA7AA003A669E",
+                                          "copied_sha256":  "93B403A043CFBFC9C754BF5336E7553F02850E47F93D0B3C7F7EA7AA003A669E",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "test_new_features.py",
+                                          "size_bytes":  3542,
+                                          "source_sha256":  "84C12A95D6C0F4C8019EB15067A9C2713B44BBFB42D340325C9D79AB93A4FE89",
+                                          "copied_sha256":  "84C12A95D6C0F4C8019EB15067A9C2713B44BBFB42D340325C9D79AB93A4FE89",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "test_setup.py",
+                                          "size_bytes":  5756,
+                                          "source_sha256":  "1F0D0ECC0552A55DCB915E8C46E30DD2CFF6B5B7483E2453CD48827C87F0B1A6",
+                                          "copied_sha256":  "1F0D0ECC0552A55DCB915E8C46E30DD2CFF6B5B7483E2453CD48827C87F0B1A6",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "test_utils.py",
+                                          "size_bytes":  2066,
+                                          "source_sha256":  "1CAC0E3C4CC4FF4038CB16DE45403A3B6DC4686B3ADAE87E63F49A37CBBE6EAA",
+                                          "copied_sha256":  "1CAC0E3C4CC4FF4038CB16DE45403A3B6DC4686B3ADAE87E63F49A37CBBE6EAA",
+                                          "verified":  true
+                                      },
+                                      {
+                                          "relative_path":  "utils.py",
+                                          "size_bytes":  4783,
+                                          "source_sha256":  "BE6A002B743CFBF1F13EA87CD90E5AF76E7D3355AAABAFAA058078EB6E4FD6DF",
+                                          "copied_sha256":  "BE6A002B743CFBF1F13EA87CD90E5AF76E7D3355AAABAFAA058078EB6E4FD6DF",
+                                          "verified":  true
+                                      }
+                                  ]
+                    }
+                ]
+}

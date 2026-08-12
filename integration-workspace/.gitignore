@@ -1,0 +1,15 @@
+# Local secrets and runtime configuration
+.env
+.env.*
+!.env.example
+
+# Local runtime/test artifacts
+*.db
+*.sqlite
+*.sqlite3
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+uploads/
+

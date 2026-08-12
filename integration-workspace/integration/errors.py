@@ -14,3 +14,14 @@ class DependencyUnavailableError(AppError):
             details,
         )
 
+
+class InvalidIntelligenceOutputError(AppError):
+    """Validated boundary rejected an Intelligence result."""
+
+    def __init__(self, message: str = "Intelligence output failed validation", details: dict | None = None) -> None:
+        super().__init__(
+            "INVALID_INTELLIGENCE_OUTPUT",
+            message,
+            status.HTTP_502_BAD_GATEWAY,
+            details,
+        )

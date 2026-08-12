@@ -1,4 +1,4 @@
-# Phase 1 Integration Runtime
+# Integration Runtime
 
 The public application host is the unchanged Intelligence FastAPI app decorated by `integration.main`.
 
@@ -23,6 +23,7 @@ The Phase 1 host adds these protected Platform routes without changing existing 
 - `GET /api/v1/auth/me`
 - `POST /api/v1/candidate/evidence`
 - `GET/PUT /api/v1/candidate`
+- `POST /api/v1/integration/profile/analyze`
 - `GET /api/v1/readiness`
 
 For explicitly marked local development only, the runtime may use:
@@ -31,4 +32,4 @@ For explicitly marked local development only, the runtime may use:
 - `INTEGRATION_ALLOW_INMEMORY_SESSIONS=true`
 - `INTEGRATION_ALLOW_SQLITE_TESTS=true` only for test processes, never as a production-like runtime.
 
-The root environment file is not copied or auto-committed. Set variables through the process environment or the approved secure secret mechanism. Phase 1 does not invoke live AI providers.
+The root environment file is not copied or auto-committed. Set variables through the process environment or the approved secure secret mechanism. The profile adapter invokes the existing Intelligence profile preparation workflow only through its explicit gateway, then validates and allowlists the returned context before persisting an integration-owned snapshot. Tests inject a fake gateway and do not require live AI providers.

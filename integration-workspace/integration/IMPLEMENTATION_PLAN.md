@@ -28,6 +28,8 @@ Status: planning only. Experience Builder is excluded.
 
 ## Phase 3: first AI workflow connection
 
+Status: Phase 2 candidate/profile-analysis adapter implemented locally. The existing Intelligence profile route and workflow files remain unchanged. The protected integration route validates and persists only an allowlisted profile snapshot.
+
 1. Connect candidate/evidence payloads to the existing Intelligence profile workflow.
 2. Validate the returned profile context and map it to Platform capability/evidence records.
 3. Preserve deterministic fallback when AI configuration or providers are unavailable.
@@ -79,4 +81,3 @@ The full Experience/UI flow is intentionally not tested because Experience Build
 ## Next smallest safe implementation batch
 
 Create only the adapter/DTO skeleton and fake-provider contract tests inside the copied workspace. Do not wire live production routes, modify Intelligence workflow code, or require API keys in that batch.
-

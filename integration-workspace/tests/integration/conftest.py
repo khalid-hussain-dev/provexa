@@ -64,16 +64,48 @@ def intelligence_app() -> FastAPI:
 
 
 @pytest.fixture
-def host_app(intelligence_app: FastAPI) -> FastAPI:
+def profile_gateway():
+    class FakeProfileGateway:
+        def __init__(self) -> None:
+            self.inputs = []
+            self.result = {
+                "candidate_summary": "Validated profile summary",
+                "primary_domain": "Backend Engineering",
+                "secondary_domains": ["Platform Engineering"],
+                "domain_confidence": 88,
+                "all_skills": ["Python", "FastAPI", "PostgreSQL"],
+                "skill_clusters": {"backend": ["Python", "FastAPI"]},
+                "technical_strengths": ["API design"],
+                "potential_weaknesses": ["Kubernetes"],
+                "interview_readiness": "medium",
+                "recommended_interview_depth": "intermediate",
+                "profile_context": "Evidence-backed test context",
+                "raw_result": "must not be persisted",
+            }
+
+        async def analyze(self, candidate):
+            self.inputs.append(candidate)
+            return self.result
+
+    return FakeProfileGateway()
+
+
+@pytest.fixture
+def host_app(intelligence_app: FastAPI, profile_gateway) -> FastAPI:
     from integration.host import create_host_app
     from integration.session_store import InMemorySessionStore
 
-    return create_host_app(intelligence_app, session_store=InMemorySessionStore())
+    return create_host_app(
+        intelligence_app,
+        session_store=InMemorySessionStore(),
+        profile_gateway=profile_gateway,
+    )
 
 
 @pytest.fixture(autouse=True)
 def reset_database() -> None:
     from app.auth.repository import reset_user_repository
+    from integration.profile_persistence import reset_profile_analysis_snapshots
 
     reset_user_repository()
-
+    reset_profile_analysis_snapshots()

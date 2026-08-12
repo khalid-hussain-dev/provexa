@@ -21,7 +21,7 @@ The eventual composed host must preserve the existing Intelligence route paths. 
 | Route | Existing behavior | Integration treatment |
 |---|---|---|
 | `GET /` | Intelligence health response | Preserve unchanged |
-| `POST /api/v1/profile/analyze` | Profile/resume/GitHub/web analysis | Preserve route; later wrap authenticated persistence through an adapter |
+| `POST /api/v1/profile/analyze` | Profile/resume/GitHub/web analysis | Preserve route unchanged; the Phase 2 adapter is exposed separately at `/api/v1/integration/profile/analyze` |
 | `POST /api/v1/interview/questions` | AI question generation | Preserve route; adapter may supply Platform-owned candidate context |
 | `POST /api/v1/interview/evaluate` | Batch AI interview evaluation | Preserve route; adapter submits Platform transcript and validates result |
 | `POST /api/v1/jobs/recommend` | Intelligence job recommendation service | Preserve as host route; do not collide with Platform route |
@@ -46,7 +46,12 @@ The eventual composed host must preserve the existing Intelligence route paths. 
 | Resume persistence | `backend/app/resumes/*` | Enforce evidence-backed structured output |
 | Jobs persistence and seeded data | `backend/app/jobs/*` | Preserve Platform job source and deterministic fallback |
 
-## Proposed adapter contracts
+## Implemented adapter contracts
+
+- `POST /api/v1/integration/profile/analyze`: authenticated Platform candidate/evidence data is mapped to the existing Intelligence `CandidateProfile` shape, passed through the existing profile-preparation workflow, validated at the boundary, and persisted as an integration-owned profile snapshot.
+- Raw or unknown Intelligence fields are not persisted. Capability scores are not invented because the existing profile output does not provide evidence-backed scores.
+
+## Remaining proposed adapter contracts
 
 The next implementation phase should introduce adapters in `integration/` without changing the copied Intelligence workflow code:
 
@@ -59,4 +64,3 @@ The next implementation phase should introduce adapters in `integration/` withou
 - `ProviderHealth/FallbackGateway`: explicit provider status and deterministic fallback selection.
 
 No adapter is wired in this setup phase.
-

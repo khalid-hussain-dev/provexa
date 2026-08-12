@@ -131,7 +131,59 @@ def interview_gateway():
 
 
 @pytest.fixture
-def host_app(intelligence_app: FastAPI, profile_gateway, interview_gateway) -> FastAPI:
+def learning_gateway():
+    class FakeLearningGateway:
+        def __init__(self) -> None:
+            self.course_inputs = []
+            self.resume_inputs = []
+            self.course_result = {
+                "title": "Backend Readiness Sprint",
+                "target_role": "Backend Engineer",
+                "current_score": 82,
+                "target_score": 97,
+                "selected_priority_skills": ["Testing", "System Design"],
+                "modules": [
+                    {
+                        "module_title": "Testing Foundations",
+                        "skill_name": "Testing",
+                        "concept_explanation": "Build reliable integration tests.",
+                        "code_example": "def test_api(): pass",
+                        "validation_exercise": "Write an ownership test.",
+                        "solution_hint": "Use an isolated database.",
+                    },
+                    {
+                        "module_title": "System Design",
+                        "skill_name": "System Design",
+                        "concept_explanation": "Design service boundaries and trade-offs.",
+                        "code_example": "class Service: pass",
+                        "validation_exercise": "Describe a scalable API.",
+                        "solution_hint": "Start with the data flow.",
+                    },
+                ],
+                "summary": "A focused course for the identified interview gaps.",
+                "raw_provider_payload": "must not persist",
+            }
+            self.resume_result = None
+
+        async def generate_course(self, **kwargs):
+            self.course_inputs.append(kwargs)
+            return self.course_result
+
+        async def optimize_resume(self, **kwargs):
+            self.resume_inputs.append(kwargs)
+            return self.resume_result or {
+                "original_resume_text": kwargs["resume_text"],
+                "updated_resume_text": kwargs["resume_text"] + "\nSkills: Testing, System Design",
+                "injected_skills": list(kwargs["newly_learned_skills"]),
+                "summary_of_changes": "Added course skills to the skills section.",
+                "raw_provider_payload": "must not persist",
+            }
+
+    return FakeLearningGateway()
+
+
+@pytest.fixture
+def host_app(intelligence_app: FastAPI, profile_gateway, interview_gateway, learning_gateway) -> FastAPI:
     from integration.host import create_host_app
     from integration.session_store import InMemorySessionStore
 
@@ -140,6 +192,7 @@ def host_app(intelligence_app: FastAPI, profile_gateway, interview_gateway) -> F
         session_store=InMemorySessionStore(),
         profile_gateway=profile_gateway,
         interview_gateway=interview_gateway,
+        learning_gateway=learning_gateway,
     )
 
 
@@ -147,8 +200,10 @@ def host_app(intelligence_app: FastAPI, profile_gateway, interview_gateway) -> F
 def reset_database() -> None:
     from app.auth.repository import reset_user_repository
     from integration.interview_persistence import reset_interview_integration_records
+    from integration.learning_persistence import reset_learning_integration_records
     from integration.profile_persistence import reset_profile_analysis_snapshots
 
+    reset_learning_integration_records()
     reset_interview_integration_records()
     reset_profile_analysis_snapshots()
     reset_user_repository()

@@ -53,6 +53,9 @@ The eventual composed host must preserve the existing Intelligence route paths. 
 - `POST /api/v1/integration/interviews`: authenticated candidate plus a Platform job and latest profile snapshot are mapped into the unchanged Intelligence question-generation method; generated questions are validated and persisted in Platform interview tables.
 - `POST /api/v1/integration/interviews/{interview_id}/answers`: owned transcript answers are persisted without local scoring; Intelligence remains the evaluation authority.
 - `POST /api/v1/integration/interviews/{interview_id}/complete`: the owned transcript is submitted to the unchanged Intelligence evaluation method, then an allowlisted evaluation snapshot is persisted.
+- `POST /api/v1/integration/courses`: a completed owned interview evaluation is mapped into the unchanged Intelligence course-generation method; validated modules are persisted in Platform course tables.
+- `POST /api/v1/integration/courses/{course_id}/progress`: Platform remains authoritative for course progress.
+- `POST /api/v1/integration/resumes/optimize`: an explicitly selected owned CV evidence record and course-derived skills are passed to the unchanged Intelligence optimizer; the persisted resume keeps the selected evidence reference.
 
 ## Remaining proposed adapter contracts
 

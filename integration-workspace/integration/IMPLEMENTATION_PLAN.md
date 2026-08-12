@@ -46,10 +46,12 @@ Status: implemented locally. The adapter preserves Intelligence question generat
 
 ## Phase 4: course and resume compatibility
 
-1. Map existing Intelligence course modules into Platform course records.
-2. Keep Platform progress persistence authoritative.
-3. Test resume optimization only with explicit source text and evidence references.
-4. Keep Platform evidence lock authoritative; never infer verification from AI output.
+Status: implemented locally. Course generation requires a completed Phase 3 evaluation; resume optimization requires explicit owned CV evidence and course-derived skills.
+
+1. Map existing Intelligence course modules into Platform course records. Completed.
+2. Keep Platform progress persistence authoritative. Completed.
+3. Test resume optimization only with explicit source text and evidence references. Completed with fake providers.
+4. Keep Platform evidence lock authoritative; never infer verification from AI output. Completed.
 
 ## Phase 5: local golden-path validation
 

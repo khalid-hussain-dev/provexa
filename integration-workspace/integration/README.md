@@ -27,6 +27,9 @@ The Phase 1 host adds these protected Platform routes without changing existing 
 - `POST /api/v1/integration/interviews`
 - `POST /api/v1/integration/interviews/{interview_id}/answers`
 - `POST /api/v1/integration/interviews/{interview_id}/complete`
+- `POST /api/v1/integration/courses`
+- `POST /api/v1/integration/courses/{course_id}/progress`
+- `POST /api/v1/integration/resumes/optimize`
 - `GET /api/v1/readiness`
 
 For explicitly marked local development only, the runtime may use:
@@ -38,3 +41,5 @@ For explicitly marked local development only, the runtime may use:
 The root environment file is not copied or auto-committed. Set variables through the process environment or the approved secure secret mechanism. The profile adapter invokes the existing Intelligence profile preparation workflow only through its explicit gateway, then validates and allowlists the returned context before persisting an integration-owned snapshot. Tests inject a fake gateway and do not require live AI providers.
 
 The interview adapter uses the latest owned profile snapshot and selected Platform job as input to the unchanged Intelligence interview methods. Platform owns interview/session/answer persistence and authorization; Intelligence owns question generation and transcript evaluation. Only validated, allowlisted evaluation fields are persisted.
+
+The learning adapters require a completed owned interview evaluation before course generation. Course modules and progress use Platform persistence. Resume optimization requires an explicitly selected owned CV evidence record and persists only that evidence reference plus validated Intelligence output.

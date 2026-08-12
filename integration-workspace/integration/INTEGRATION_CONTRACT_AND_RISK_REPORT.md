@@ -56,8 +56,8 @@ Experience Builder is excluded completely.
 | Interview questions | Intelligence `InterviewSystem.generate_interview_questions` | Adapter translates Platform candidate/job context and persists questions through Platform | Implemented Phase 3 |
 | Interview answers | Platform answer persistence | Keep per-answer Platform state; send the complete transcript to Intelligence for final reasoning | Implemented Phase 3 |
 | Interview verdict | Intelligence interview evaluation | Validate and persist an allowlisted `InterviewResult` snapshot without inventing dimension scores | Implemented Phase 3 |
-| Learning path | Intelligence `generate_targeted_course` | Adapter maps `DetailedCourse` and modules to Platform course records | Planned |
-| Resume tailoring | Intelligence optimizer | Use only with explicit source text and evidence references; Platform remains evidence-lock authority | Deferred after contract test |
+| Learning path | Intelligence `generate_targeted_course` | Adapter maps validated `DetailedCourse` and modules to Platform course records; Platform owns progress | Implemented Phase 4 |
+| Resume tailoring | Intelligence optimizer | Use only with explicit owned CV source text and evidence references; Platform remains evidence-lock authority | Implemented Phase 4 |
 | Job recommendations | Existing Intelligence route and job service | Preserve Intelligence route; do not mount conflicting Platform route at the same path | Planned host policy |
 | Health/readiness | Both modules | Add integration health checks without changing existing route behavior | Planned |
 | Experience/UI | Not implemented | No work in this phase | Out of scope |

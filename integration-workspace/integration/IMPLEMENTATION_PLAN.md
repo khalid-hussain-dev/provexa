@@ -1,6 +1,6 @@
 # Copy-Based Integration Implementation Plan
 
-Status: planning only. Experience Builder is excluded.
+Status: local integration roadmap through Phase 5 completed. Experience Builder is excluded.
 
 ## Completed setup phase
 
@@ -55,6 +55,8 @@ Status: implemented locally. Course generation requires a completed Phase 3 eval
 
 ## Phase 5: local golden-path validation
 
+Status: completed locally with fake Intelligence providers. Experience Builder remains excluded.
+
 Run locally in this order:
 
 ```text
@@ -71,6 +73,8 @@ Platform auth
 
 The full Experience/UI flow is intentionally not tested because Experience Builder is not implemented.
 
+The local golden-path test is `tests/integration/test_phase5_golden_path.py`. Platform job selection and deterministic matching use the non-conflicting `/api/v1/integration/platform/*` compatibility routes.
+
 ## Release gates
 
 - Original source workspaces remain unchanged.
@@ -84,4 +88,4 @@ The full Experience/UI flow is intentionally not tested because Experience Build
 
 ## Next smallest safe implementation batch
 
-Create only the adapter/DTO skeleton and fake-provider contract tests inside the copied workspace. Do not wire live production routes, modify Intelligence workflow code, or require API keys in that batch.
+Review the completed local golden path and decide whether to publish Phase 5. Any future live-provider verification, production deployment hardening, or Experience Builder work requires a separate explicit scope decision.

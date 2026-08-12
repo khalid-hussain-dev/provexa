@@ -56,6 +56,8 @@ The eventual composed host must preserve the existing Intelligence route paths. 
 - `POST /api/v1/integration/courses`: a completed owned interview evaluation is mapped into the unchanged Intelligence course-generation method; validated modules are persisted in Platform course tables.
 - `POST /api/v1/integration/courses/{course_id}/progress`: Platform remains authoritative for course progress.
 - `POST /api/v1/integration/resumes/optimize`: an explicitly selected owned CV evidence record and course-derived skills are passed to the unchanged Intelligence optimizer; the persisted resume keeps the selected evidence reference.
+- `GET /api/v1/integration/platform/jobs`: exposes Platform’s seeded/deterministic job selection surface under a non-conflicting compatibility prefix.
+- `POST /api/v1/integration/platform/match`: invokes Platform’s deterministic candidate/job match fallback and persists its analysis record; no Intelligence behavior is changed.
 
 ## Remaining proposed adapter contracts
 

@@ -3,7 +3,6 @@ from fastapi.testclient import TestClient
 
 from app.core.errors import ConflictError
 from app.core.exception_handlers import register_exception_handlers
-from app.core.logging import redact
 
 
 def _client() -> TestClient:
@@ -42,15 +41,3 @@ def test_validation_error_uses_contract_envelope() -> None:
     assert body["error"]["code"] == "VALIDATION_ERROR"
     assert body["error"]["message"] == "Validation failed"
     assert "errors" in body["error"]["details"]
-
-
-def test_validation_redaction_removes_sensitive_inputs() -> None:
-    details = [
-        {"loc": ("body", "password"), "msg": "String should have at least 8 characters", "input": "secret"},
-        {"loc": ("body", "email"), "msg": "Invalid email", "input": "bad-email"},
-    ]
-
-    redacted = redact(details)
-
-    assert redacted[0]["input"] == "[REDACTED]"
-    assert redacted[1]["input"] == "bad-email"

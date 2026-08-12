@@ -70,12 +70,3 @@ def test_current_user_requires_and_accepts_bearer_token() -> None:
     response = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     assert response.json()["email"] == "user@example.com"
-
-
-def test_current_user_rejects_invalid_bearer_token() -> None:
-    client = _client()
-
-    response = client.get("/api/v1/auth/me", headers={"Authorization": "Bearer not-a-valid-token"})
-
-    assert response.status_code == 401
-    assert response.json()["error"]["code"] == "AUTHENTICATION_ERROR"

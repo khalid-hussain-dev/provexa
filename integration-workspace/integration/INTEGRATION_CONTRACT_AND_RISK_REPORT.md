@@ -61,6 +61,7 @@ Experience Builder is excluded completely.
 | Job recommendations | Existing Intelligence route and job service | Preserve Intelligence route; do not mount conflicting Platform route at the same path | Planned host policy |
 | Job selection and deterministic match | Platform job repository and analysis service | Expose non-conflicting `/api/v1/integration/platform/*` compatibility routes for the golden path | Implemented Phase 5 |
 | Health/readiness | Both modules | Add integration health checks without changing existing route behavior | Implemented Phase 1 |
+| Provider readiness | Environment configuration | Report configuration-only Gemini/Groq/GitHub/Adzuna state without secret values or live calls | Implemented Phase 6 |
 | Experience/UI | Not implemented | No work in this phase | Out of scope |
 
 ## Risks requiring controlled handling

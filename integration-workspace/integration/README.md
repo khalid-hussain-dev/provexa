@@ -33,6 +33,7 @@ The Phase 1 host adds these protected Platform routes without changing existing 
 - `GET /api/v1/integration/platform/jobs`
 - `POST /api/v1/integration/platform/match`
 - `GET /api/v1/readiness`
+- `GET /api/v1/readiness/providers`
 
 For explicitly marked local development only, the runtime may use:
 
@@ -47,3 +48,5 @@ The interview adapter uses the latest owned profile snapshot and selected Platfo
 The learning adapters require a completed owned interview evaluation before course generation. Course modules and progress use Platform persistence. Resume optimization requires an explicitly selected owned CV evidence record and persists only that evidence reference plus validated Intelligence output.
 
 The local golden path is covered by `tests/integration/test_phase5_golden_path.py` and uses fake Intelligence gateways. It does not require API keys or Experience Builder.
+
+Provider readiness is configuration-only: it reports whether Gemini, Groq, GitHub, and Adzuna settings are present without making live calls or returning secret values. Platform job selection and candidate/job matching remain deterministic fallbacks when AI or external job providers are unavailable.

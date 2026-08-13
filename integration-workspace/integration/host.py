@@ -30,6 +30,7 @@ def create_host_app(
     from .learning_persistence import CourseIntegrationContextRecord  # noqa: F401
     from .learning_router import build_learning_router
     from .platform_router import build_platform_router
+    from .provider_router import router as provider_router
     from .profile_adapter import IntelligenceProfileGateway
     from .profile_persistence import ProfileAnalysisSnapshotRecord  # noqa: F401
     from .profile_router import build_profile_router
@@ -51,6 +52,7 @@ def create_host_app(
         build_learning_router(learning_gateway or IntelligenceLearningGateway())
     )
     intelligence_app.include_router(build_platform_router())
+    intelligence_app.include_router(provider_router)
 
     @intelligence_app.get("/api/v1/readiness", tags=["integration-support"])
     async def readiness() -> dict:

@@ -89,3 +89,7 @@ The local golden-path test is `tests/integration/test_phase5_golden_path.py`. Pl
 ## Next smallest safe implementation batch
 
 Review the completed local golden path and decide whether to publish Phase 5. Any future live-provider verification, production deployment hardening, or Experience Builder work requires a separate explicit scope decision.
+
+## Phase 6: provider readiness and fallback observability
+
+Status: implemented locally. `/api/v1/readiness/providers` reports configuration state only, never calls providers, and never exposes secret values. Deterministic Platform job selection and candidate/job matching are explicitly reported as fallbacks.

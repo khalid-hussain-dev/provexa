@@ -1,39 +1,53 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Dict
+import time
+from threading import RLock
+from typing import Any, Callable, Mapping
 
-from ..models import SessionPayload
-from ..repositories import SessionStore
+from ..config import AuthKitConfig
+from ..errors import DependencyUnavailableError
 
 
-class InMemorySessionStore(SessionStore):
-    """Non-durable, process-local session store.
+class InMemorySessionStore:
+    mode = "memory-local-only"
 
-    This implementation is **intentionally** only for tests and ad-hoc local
-    usage. To avoid accidental production use, construction requires an
-    explicit flag acknowledging this limitation.
-    """
+    def __init__(self, config: AuthKitConfig, clock: Callable[[], float] | None = None) -> None:
+        if not config.allow_in_memory_sessions or not config.is_local_or_test:
+            raise DependencyUnavailableError("in-memory sessions require explicit local/test configuration")
+        self._clock = clock or time.time
+        self._sessions: dict[str, tuple[float, dict[str, Any]]] = {}
+        self._revoked: dict[str, float] = {}
+        self._lock = RLock()
 
-    def __init__(self, *, allow_insecure: bool = False) -> None:
-        if not allow_insecure:
-            raise RuntimeError(
-                "InMemorySessionStore is test-only and non-durable; "
-                "pass allow_insecure=True to acknowledge this explicitly."
-            )
-        self._sessions: Dict[str, SessionPayload] = {}
+    def ping(self) -> bool:
+        return True
 
-    def save(self, session: SessionPayload) -> None:
-        self._sessions[session.token_id] = session
+    def create(self, session_id: str, payload: Mapping[str, Any], ttl_seconds: int) -> None:
+        with self._lock:
+            self._sessions[session_id] = (self._clock() + max(1, int(ttl_seconds)), dict(payload))
 
-    def get(self, token_id: str) -> SessionPayload | None:
-        session = self._sessions.get(token_id)
-        if not session:
-            return None
-        if session.expires_at < datetime.now(timezone.utc):
-            self._sessions.pop(token_id, None)
-            return None
-        return session
+    def get(self, session_id: str) -> dict[str, Any] | None:
+        with self._lock:
+            item = self._sessions.get(session_id)
+            if item is None:
+                return None
+            expires_at, payload = item
+            if expires_at <= self._clock():
+                self._sessions.pop(session_id, None)
+                return None
+            return dict(payload)
 
-    def delete(self, token_id: str) -> None:
-        self._sessions.pop(token_id, None)
+    def revoke(self, session_id: str, ttl_seconds: int) -> None:
+        with self._lock:
+            self._sessions.pop(session_id, None)
+            self._revoked[session_id] = self._clock() + max(1, int(ttl_seconds))
+
+    def is_revoked(self, session_id: str) -> bool:
+        with self._lock:
+            expires_at = self._revoked.get(session_id)
+            if expires_at is None:
+                return False
+            if expires_at <= self._clock():
+                self._revoked.pop(session_id, None)
+                return False
+            return True

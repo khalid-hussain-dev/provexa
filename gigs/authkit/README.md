@@ -1,38 +1,28 @@
-# AuthKit (Batch 1 core)
+# AuthKit
 
-Standalone, framework-independent authentication core extracted from the PROVEXA project.
+AuthKit is a reusable authentication core for Python applications. It provides
+PBKDF2 password hashing, signed access tokens, Redis-backed server-side sessions,
+explicit local/test memory sessions, password reset primitives, TOTP support,
+and optional FastAPI integration.
 
-Batch 1 delivers:
+## Quick start
 
-- Core domain types (AuthUser, TokenPair, SessionPayload, TwoFactorSetup).
-- AuthKitConfig for runtime configuration.
-- Password hashing and verification (PBKDF2, PROVEXA-compatible).
-- JWT creation/decoding/expiry/purpose validation.
-- UserRepository and SessionStore protocols.
-- Redis-backed and explicit test-only in-memory session stores.
-- AuthService core behavior (signup, authenticate, password reset, 2FA helpers).
+Install the core package, then add the optional integrations as needed:
 
-## Development
-
-Install in editable mode with dev dependencies:
-
-```bash
-cd gigs/authkit
-python -m venv .venv
-source .venv/bin/activate  # or .venv\\Scripts\\activate on Windows
-pip install -e .[dev]
+```text
+pip install -e .[fastapi,redis]
 ```
 
-Run the Batch 1 unit tests:
+Production applications must configure Redis. The in-memory session store is
+available only when `environment` is local/test and
+`allow_in_memory_sessions=True`.
 
-```bash
-pytest tests
-```
+See `docs/fastapi.md` and `examples/standalone_fastapi/` for integration.
 
-Importability check (must succeed with only stdlib available):
+## Compatibility
 
-```bash
-python -c "import authkit; print(authkit.__version__)"
-```
+AuthKit preserves PROVEXA's password hash format and JWT claim contract. The
+PROVEXA adapter is opt-in and does not replace existing PROVEXA routes.
 
-FastAPI and PROVEXA adapters are implemented in later batches and are intentionally out of scope here.
+OAuth, subscriptions, frontend work, Experience Builder, and AI behavior are
+outside AuthKit's scope.

@@ -1,20 +1,42 @@
 from __future__ import annotations
 
+from typing import Any
+
 
 class AuthKitError(Exception):
-    """Base class for all AuthKit-specific errors."""
+    code = "AUTHKIT_ERROR"
+    status_code = 400
+
+    def __init__(self, message: str, details: dict[str, Any] | None = None) -> None:
+        self.message = message
+        self.details = details or {}
+        super().__init__(message)
 
 
 class AuthenticationError(AuthKitError):
-    """Raised when credentials, tokens, or sessions are invalid."""
+    code = "AUTHENTICATION_ERROR"
+    status_code = 401
+
+
+class AuthorizationError(AuthKitError):
+    code = "AUTHORIZATION_ERROR"
+    status_code = 403
 
 
 class ConflictError(AuthKitError):
-    """Raised when attempting an operation that violates uniqueness or state.
+    code = "CONFLICT"
+    status_code = 409
 
-    For example, signing up with an existing email or enabling 2FA twice.
-    """
 
-    def __init__(self, message: str, *, field: str | None = None) -> None:
-        super().__init__(message)
-        self.field = field
+class ValidationError(AuthKitError):
+    code = "VALIDATION_ERROR"
+    status_code = 422
+
+
+class DependencyUnavailableError(AuthKitError):
+    code = "DEPENDENCY_UNAVAILABLE"
+    status_code = 503
+
+
+def error_envelope(code: str, message: str, details: dict[str, Any] | None = None) -> dict[str, Any]:
+    return {"error": {"code": code, "message": message, "details": details or {}}}

@@ -1,49 +1,20 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import datetime
 from typing import Protocol
 
-from .models import AuthUser, SessionPayload
+from .models import AuthUser
 
 
 class UserRepository(Protocol):
-    """Abstraction over user persistence for AuthKit.
+    def get_by_email(self, email: str) -> AuthUser | None: ...
 
-    Implementations adapt this protocol to concrete databases or ORMs.
-    """
+    def get_by_id(self, user_id: str) -> AuthUser | None: ...
 
-    def get_by_email(self, email: str) -> AuthUser | None: ...  # pragma: no cover - protocol
+    def create_user(self, *, email: str, password_hash: str, name: str | None = None) -> AuthUser: ...
 
-    def get_by_id(self, user_id: str) -> AuthUser | None: ...  # pragma: no cover - protocol
+    def update_user(self, user: AuthUser) -> AuthUser: ...
 
-    def create(self, user: AuthUser) -> AuthUser: ...  # pragma: no cover - protocol
+    def store_password_reset_token(self, *, user_id: str, token_hash: str, expires_at: datetime) -> None: ...
 
-    def update(self, user: AuthUser) -> AuthUser: ...  # pragma: no cover - protocol
-
-    def store_password_reset_token(self, token_hash: str, user_id: str, expires_at: datetime) -> None: ...  # pragma: no cover - protocol
-
-    def consume_password_reset_token(self, token_hash: str) -> AuthUser | None: ...  # pragma: no cover - protocol
-
-    def revoke_token(self, token_id: str, expires_at: datetime) -> None: ...  # pragma: no cover - protocol
-
-    def is_token_revoked(self, token_id: str) -> bool: ...  # pragma: no cover - protocol
-
-
-@dataclass(slots=True)
-class SessionRecord:
-    payload: SessionPayload
-
-
-class SessionStore(Protocol):
-    """Abstraction over server-side session storage.
-
-    The canonical production implementation is Redis-backed; Batch 1 also
-    defines an explicit in-memory variant for tests and local development.
-    """
-
-    def save(self, session: SessionPayload) -> None: ...  # pragma: no cover - protocol
-
-    def get(self, token_id: str) -> SessionPayload | None: ...  # pragma: no cover - protocol
-
-    def delete(self, token_id: str) -> None: ...  # pragma: no cover - protocol
+    def consume_password_reset_token(self, token_hash: str, now: datetime) -> AuthUser | None: ...

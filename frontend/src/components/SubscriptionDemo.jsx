@@ -1,0 +1,8 @@
+import { useState } from 'react';
+import { CheckCircle2, X, Zap } from 'lucide-react';
+
+export default function SubscriptionDemo({ isOpen, onClose }) {
+  const [confirmed, setConfirmed] = useState(false);
+  if (!isOpen) return null;
+  return <div className="modal-backdrop" role="presentation" onClick={onClose}><section className="modal-card" role="dialog" aria-modal="true" aria-labelledby="subscription-title" onClick={(event) => event.stopPropagation()}><button type="button" className="icon-button modal-close" onClick={onClose} aria-label="Close subscription demo"><X size={18} /></button>{confirmed ? <div className="modal-success"><CheckCircle2 size={42} /><h2>Demo pass activated</h2><p>No payment was processed. This state is local to the frontend demonstration.</p><button type="button" className="btn-primary" onClick={onClose}>Return to workspace</button></div> : <><span className="eyebrow">Subscription demonstration</span><h2 id="subscription-title">PROVEXA Pro Readiness</h2><p className="muted">A frontend-only payment state for demonstrating product packaging. No billing provider is connected.</p><div className="plan-card"><div><strong>Pro readiness pass</strong><span>For the hackathon demo</span></div><strong className="plan-price">$0</strong></div><ul className="feature-list"><li>Job-specific assessment paths</li><li>Evidence-backed resume preview</li><li>Progress tracking for learning modules</li></ul><div className="modal-actions"><button type="button" className="btn-secondary" onClick={onClose}>Close</button><button type="button" className="btn-primary" onClick={() => setConfirmed(true)}><Zap size={15} /> Activate demo state</button></div></>}</section></div>;
+}

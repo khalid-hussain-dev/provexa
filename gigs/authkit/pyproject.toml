@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling>=1.21.1"]
+build-backend = "hatchling.build"
+
+[project]
+name = "authkit"
+version = "0.1.0"
+description = "Standalone, framework-independent authentication core."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+redis = ["redis>=5,<6"]
+dev = ["pytest>=8,<9"]
+
+[project.urls]
+Homepage = "https://example.com/authkit"
+
+[tool.hatch.build]
+packages = ["src/authkit"]

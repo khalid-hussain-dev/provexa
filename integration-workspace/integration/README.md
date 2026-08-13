@@ -34,6 +34,7 @@ The Phase 1 host adds these protected Platform routes without changing existing 
 - `POST /api/v1/integration/platform/match`
 - `GET /api/v1/readiness`
 - `GET /api/v1/readiness/providers`
+- `GET /api/v1/readiness/release`
 
 For explicitly marked local development only, the runtime may use:
 
@@ -50,3 +51,5 @@ The learning adapters require a completed owned interview evaluation before cour
 The local golden path is covered by `tests/integration/test_phase5_golden_path.py` and uses fake Intelligence gateways. It does not require API keys or Experience Builder.
 
 Provider readiness is configuration-only: it reports whether Gemini, Groq, GitHub, and Adzuna settings are present without making live calls or returning secret values. Platform job selection and candidate/job matching remain deterministic fallbacks when AI or external job providers are unavailable.
+
+Phase 7 release readiness verifies the source manifest, forbidden artifacts, production-only fallback flags, and the composed route inventory. See `FINAL_RELEASE_CHECKLIST.md` and `LOCAL_RUNBOOK.md`.

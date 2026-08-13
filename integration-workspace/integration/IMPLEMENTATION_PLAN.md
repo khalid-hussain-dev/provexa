@@ -93,3 +93,7 @@ Review the completed local golden path and decide whether to publish Phase 5. An
 ## Phase 6: provider readiness and fallback observability
 
 Status: implemented locally. `/api/v1/readiness/providers` reports configuration state only, never calls providers, and never exposes secret values. Deterministic Platform job selection and candidate/job matching are explicitly reported as fallbacks.
+
+## Phase 7: final release readiness
+
+Status: implemented locally. `/api/v1/readiness/release` verifies the copied-source manifest, forbidden artifacts, production-only fallback flags, provider configuration state, and route preservation. The local runbook and final release checklist are in `integration/`.

@@ -63,7 +63,7 @@ export default function InterviewArena({ candidate, selectedJob, onComplete }) {
   if (!selectedJob) return <div className="workspace-page"><StepHeader eyebrow="03 · Interview" title="Select a target job first." description="The interview is generated from the owned job and profile context." /><Notice tone="neutral">Return to Target job and select an opportunity.</Notice></div>;
   if (loading) return <LoadingState title="Preparing the assessment" message={`Creating a persisted interview for ${selectedJob.title}…`} />;
   if (error && !interview) return <div className="workspace-page"><ErrorState message={error} onRetry={startInterview} /></div>;
-  if (!interview) return null;
+  if (!interview) return <div className="workspace-page"><ErrorState title="Interview session unavailable" message="The host did not return an interview session. No answers were submitted." onRetry={startInterview} /></div>;
 
   const question = interview.currentQuestion;
   const finished = !question;

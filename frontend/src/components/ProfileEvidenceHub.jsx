@@ -117,5 +117,11 @@ function Field({ label, value, onChange, type = 'text', readOnly = false, requir
 
 function ProfileContext({ context }) {
   const skills = context.all_skills || [];
-  return <div className="context-stack"><div><span className="meta-label">Primary domain</span><strong>{context.primary_domain || 'Not classified'}</strong></div><div><span className="meta-label">Summary</span><p>{context.candidate_summary || 'No summary returned.'}</p></div><div><span className="meta-label">Skills found</span><div className="tag-list">{skills.length ? skills.map((skill) => <span className="tag" key={skill}>{skill}</span>) : <span className="muted">None returned</span>}</div></div><div><span className="meta-label">Potential weaknesses</span><ul className="plain-list">{(context.potential_weaknesses || []).map((item) => <li key={item}>{item}</li>)}</ul></div><ProgressBar value={context.domain_confidence || 0} label="Domain confidence" /></div>;
+  return <div className="context-stack"><div><span className="meta-label">Primary domain</span><strong>{displayContextItem(context.primary_domain, 'Not classified')}</strong></div><div><span className="meta-label">Summary</span><p>{displayContextItem(context.candidate_summary, 'No summary returned.')}</p></div><div><span className="meta-label">Skills found</span><div className="tag-list">{skills.length ? skills.map((skill, index) => <span className="tag" key={`skill-${index}`}>{displayContextItem(skill)}</span>) : <span className="muted">None returned</span>}</div></div><div><span className="meta-label">Potential weaknesses</span><ul className="plain-list">{(context.potential_weaknesses || []).map((item, index) => <li key={`weakness-${index}`}>{displayContextItem(item)}</li>)}</ul></div><ProgressBar value={context.domain_confidence || 0} label="Domain confidence" /></div>;
+}
+
+function displayContextItem(item, fallback = 'Not specified') {
+  if (typeof item === 'string' || typeof item === 'number') return String(item);
+  if (!item || typeof item !== 'object') return fallback;
+  return item.name || item.skill || item.title || item.description || item.summary || fallback;
 }

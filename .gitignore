@@ -1,0 +1,29 @@
+# Local secrets and runtime configuration
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Node / Vite
+node_modules/
+dist/
+.vite/
+
+# Local runtime/test artifacts
+*.db
+*.sqlite
+*.sqlite3
+uploads/
+
+# Large local installer artifacts used only for operational verification
+.pip-cache/
+.runtime-temp/

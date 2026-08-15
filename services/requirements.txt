@@ -1,4 +1,4 @@
-crewai>=1.15.14
+crewai[google-genai]>=1.15.14
 crewai-tools>=1.15.14
 langchain-openai>=0.1.7
 langchain-community>=0.0.38

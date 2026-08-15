@@ -1,4 +1,5 @@
-const API_BASE = '/api/v1';
+const configuredApiHost = import.meta.env?.VITE_API_BASE_URL?.trim().replace(/\/$/, '');
+const API_BASE = configuredApiHost ? `${configuredApiHost}/api/v1` : '/api/v1';
 const TOKEN_KEY = 'provexa_access_token';
 const DEFAULT_MODE = import.meta.env?.VITE_API_MODE === 'demo' ? 'demo' : 'live';
 
@@ -91,6 +92,8 @@ const DEMO_QUESTIONS = [
 let demoEvidence = [];
 let demoInterview = null;
 let demoCourse = null;
+let demoTwoFactorEnabled = false;
+let demoTwoFactorPending = false;
 
 export function getApiMode() {
   return apiMode;
@@ -110,6 +113,7 @@ export function getAccessToken() {
 
 export function clearSession() {
   accessToken = null;
+  demoTwoFactorPending = false;
   try {
     globalThis.sessionStorage?.removeItem(TOKEN_KEY);
   } catch {
@@ -142,8 +146,10 @@ export async function signup(payload) {
 
 export async function login(payload) {
   if (isDemoMode()) {
-    saveToken('demo-session-token');
-    return { access_token: 'demo-session-token', token_type: 'bearer', requires_2fa: false };
+    demoTwoFactorPending = demoTwoFactorEnabled;
+    const token = demoTwoFactorPending ? 'demo-pending-2fa-token' : 'demo-session-token';
+    saveToken(token);
+    return { access_token: token, token_type: 'bearer', requires_2fa: demoTwoFactorPending };
   }
   const result = await request('/auth/login', { method: 'POST', body: payload, auth: false });
   saveToken(result.access_token);
@@ -152,6 +158,11 @@ export async function login(payload) {
 
 export async function verifyTwoFactor(code) {
   if (isDemoMode()) {
+    if (code !== '123456') {
+      throw new ApiError('Use the demo verification code 123456.', { status: 401, code: 'AUTHENTICATION_ERROR' });
+    }
+    demoTwoFactorEnabled = true;
+    demoTwoFactorPending = false;
     saveToken('demo-session-token');
     return { authenticated: true, access_token: 'demo-session-token', token_type: 'bearer' };
   }
@@ -163,9 +174,19 @@ export async function verifyTwoFactor(code) {
   return result;
 }
 
+export async function setupTwoFactor() {
+  if (isDemoMode()) {
+    return {
+      secret: 'JBSWY3DPEHPK3PXP',
+      provisioning_uri: 'otpauth://totp/PROVEXA:demo%40provexa.local?secret=JBSWY3DPEHPK3PXP&issuer=PROVEXA&digits=6',
+    };
+  }
+  return request('/auth/2fa/setup', { method: 'POST' });
+}
+
 export async function getCurrentUser() {
   if (isDemoMode()) {
-    return accessToken ? DEMO_USER : null;
+    return accessToken && !demoTwoFactorPending ? { ...DEMO_USER, two_factor_enabled: demoTwoFactorEnabled } : null;
   }
   if (!accessToken) return null;
   return request('/auth/me');
@@ -431,13 +452,21 @@ async function request(path, { method = 'GET', body, auth = true } = {}) {
 
   const payload = await parseResponse(response);
   if (!response.ok) {
-    throw new ApiError(payload?.error?.message || payload?.detail || `Request failed (${response.status}).`, {
+    throw new ApiError(apiFailureMessage(response.status, payload), {
       status: response.status,
       code: payload?.error?.code || 'HTTP_ERROR',
       details: payload?.error?.details || null,
     });
   }
   return payload;
+}
+
+function apiFailureMessage(status, payload) {
+  const message = payload?.error?.message || payload?.detail || `Request failed (${status}).`;
+  if (status >= 500 && message === 'Internal server error') {
+    return 'The integrated host could not complete this request. Verify PostgreSQL, Redis, and the API readiness endpoint before retrying.';
+  }
+  return message;
 }
 
 async function parseResponse(response) {

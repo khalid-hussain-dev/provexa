@@ -1,0 +1,9 @@
+# Composed host dependencies. Install from integration-workspace with:
+# python -m pip install -r integration/requirements.txt
+-r ../services/requirements.txt
+# The unchanged Intelligence utility imports LiteLLM directly at startup.
+litellm>=1.0.0,<2.0.0
+sqlalchemy>=2.0.0,<3.0.0
+psycopg[binary]>=3.1.0,<4.0.0
+redis>=5.0.0,<6.0.0
+uvicorn[standard]>=0.30.0,<1.0.0

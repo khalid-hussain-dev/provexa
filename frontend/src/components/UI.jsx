@@ -10,15 +10,15 @@ export function LoadingState({ title = 'Loading', message = 'Preparing your work
   );
 }
 
-export function ErrorState({ message, onRetry }) {
+export function ErrorState({ title = 'Something needs attention', message, onRetry, retryLabel = 'Try again' }) {
   return (
     <div className="state-panel state-error" role="alert">
       <AlertCircle size={28} aria-hidden="true" />
-      <h3>Something needs attention</h3>
+      <h3>{title}</h3>
       <p>{message || 'The operation could not be completed.'}</p>
       {onRetry && (
         <button type="button" className="btn-secondary" onClick={onRetry}>
-          <RotateCcw size={15} aria-hidden="true" /> Try again
+          <RotateCcw size={15} aria-hidden="true" /> {retryLabel}
         </button>
       )}
     </div>

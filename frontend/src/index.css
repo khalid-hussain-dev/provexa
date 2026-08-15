@@ -228,6 +228,12 @@ p { color: var(--ink-700); }
 .feature-list li::before { content: '✓'; margin-right: .45rem; color: var(--mineral-700); }
 .modal-success { display: grid; justify-items: center; gap: .5rem; text-align: center; color: var(--mineral-700); }
 .modal-success h2, .modal-success p { margin-bottom: 0; }
+.two-factor-form { margin-top: 1.15rem; }
+.two-factor-step { display: grid; grid-template-columns: 1.7rem 1fr; gap: .6rem; align-items: start; margin-top: .65rem; }
+.two-factor-step > span { display: grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 50%; background: var(--mineral-100); color: var(--mineral-700); font: .75rem var(--font-mono); }
+.two-factor-step strong { display: block; color: var(--ink-950); font-size: .82rem; }
+.two-factor-step p { margin: .15rem 0 0; color: var(--stone-500); font-size: .76rem; }
+.secret-control { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .45rem; align-items: center; }
 
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }

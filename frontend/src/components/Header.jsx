@@ -1,4 +1,4 @@
-import { LogOut, ShieldCheck, Sparkles } from 'lucide-react';
+import { KeyRound, LogOut, ShieldCheck, Sparkles } from 'lucide-react';
 
 const TABS = [
   ['profile', 'Evidence'],
@@ -9,7 +9,7 @@ const TABS = [
   ['resume', 'Resume'],
 ];
 
-export default function Header({ activeTab, setActiveTab, candidate, user, mode, onOpenSubscription, onLogout }) {
+export default function Header({ activeTab, setActiveTab, user, mode, onOpenSubscription, onOpenTwoFactor, onLogout }) {
   return (
     <header className="app-header">
       <div className="header-inner">
@@ -27,9 +27,10 @@ export default function Header({ activeTab, setActiveTab, candidate, user, mode,
         <div className="header-actions">
           <span className={`mode-pill ${mode === 'demo' ? 'demo' : ''}`}><Sparkles size={13} /> {mode === 'demo' ? 'Demo' : 'Live'}</span>
           <button type="button" className="btn-secondary small-button" onClick={onOpenSubscription}>Pro demo</button>
-          <button type="button" className="user-button" onClick={onLogout} title="Sign out">
-            <ShieldCheck size={15} /> <span>{user?.name || candidate?.name || 'Account'}</span><LogOut size={14} />
+          <button type="button" className="user-button" onClick={onOpenTwoFactor} title="Configure two-factor authentication">
+            {user?.two_factor_enabled ? <ShieldCheck size={15} /> : <KeyRound size={15} />} <span>{user?.two_factor_enabled ? '2FA active' : 'Secure account'}</span>
           </button>
+          <button type="button" className="icon-button" onClick={onLogout} title="Sign out" aria-label="Sign out"><LogOut size={15} /></button>
         </div>
       </div>
     </header>

@@ -8,6 +8,8 @@ import ReadinessVerdict from './components/ReadinessVerdict';
 import PersonalizedCourse from './components/PersonalizedCourse';
 import ResumeTailor from './components/ResumeTailor';
 import SubscriptionDemo from './components/SubscriptionDemo';
+import TwoFactorSetup from './components/TwoFactorSetup';
+import WorkspaceErrorBoundary from './components/WorkspaceErrorBoundary';
 import { LoadingState, Notice } from './components/UI';
 import {
   analyzeProfile,
@@ -20,6 +22,7 @@ import {
   login,
   logout,
   normalizeCandidate,
+  setupTwoFactor,
   signup,
   updateCandidate,
   verifyTwoFactor,
@@ -37,6 +40,7 @@ export default function App() {
   const [course, setCourse] = useState(null);
   const [resumeResult, setResumeResult] = useState(null);
   const [isSubscriptionOpen, setSubscriptionOpen] = useState(false);
+  const [isTwoFactorOpen, setTwoFactorOpen] = useState(false);
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState('');
   const [pendingTwoFactor, setPendingTwoFactor] = useState(false);
@@ -129,6 +133,18 @@ export default function App() {
     }
   }
 
+  async function beginTwoFactorSetup() {
+    return setupTwoFactor();
+  }
+
+  async function confirmTwoFactorSetup(code) {
+    await verifyTwoFactor(code);
+    const currentUser = await getCurrentUser();
+    if (!currentUser) throw new Error('Your authenticated session could not be restored after two-factor verification.');
+    setUser(currentUser);
+    return currentUser;
+  }
+
   async function persistCandidate(nextCandidate) {
     const saved = await updateCandidate(nextCandidate);
     setCandidate(normalizeCandidate(saved, user));
@@ -149,7 +165,7 @@ export default function App() {
   }
 
   const workspaceContent = useMemo(() => {
-    if (!candidate) return null;
+    if (!candidate) return <div className="workspace-page"><LoadingState title="Preparing candidate workspace" message="Restoring the authenticated candidate record…" /></div>;
     if (activeTab === 'profile') {
       return <ProfileEvidenceHub candidate={candidate} evidence={evidence} onSaveCandidate={persistCandidate} onCreateEvidence={persistEvidence} onAnalyze={runProfileAnalysis} profileAnalysis={profileAnalysis} onNext={() => setActiveTab('opportunities')} />;
     }
@@ -176,13 +192,16 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <Header activeTab={activeTab} setActiveTab={setActiveTab} candidate={candidate} user={user} mode={mode} onOpenSubscription={() => setSubscriptionOpen(true)} onLogout={handleLogout} />
+      <Header activeTab={activeTab} setActiveTab={setActiveTab} user={user} mode={mode} onOpenSubscription={() => setSubscriptionOpen(true)} onOpenTwoFactor={() => setTwoFactorOpen(true)} onLogout={handleLogout} />
       <main className="app-main">
         {mode === 'demo' && <Notice tone="info"><strong>Demo mode:</strong> seeded responses are clearly marked and isolated from live API calls.</Notice>}
-        {workspaceContent}
+        <WorkspaceErrorBoundary resetKey={activeTab} onRecover={() => setActiveTab('profile')}>
+          {workspaceContent}
+        </WorkspaceErrorBoundary>
       </main>
       <footer className="app-footer"><span>PROVEXA · From potential to proof</span><span>PostgreSQL truth · Redis session state</span></footer>
       <SubscriptionDemo isOpen={isSubscriptionOpen} onClose={() => setSubscriptionOpen(false)} />
+      <TwoFactorSetup isOpen={isTwoFactorOpen} user={user} mode={mode} onBegin={beginTwoFactorSetup} onVerify={confirmTwoFactorSetup} onClose={() => setTwoFactorOpen(false)} />
     </div>
   );
 }

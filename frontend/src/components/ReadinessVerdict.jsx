@@ -17,5 +17,11 @@ function Score({ label, value }) {
 }
 
 function List({ items, empty }) {
-  return items?.length ? <ul className="report-list">{items.map((item) => <li key={item}>{item}</li>)}</ul> : <p className="muted">{empty}</p>;
+  return items?.length ? <ul className="report-list">{items.map((item, index) => <li key={`${displayItem(item)}-${index}`}>{displayItem(item)}</li>)}</ul> : <p className="muted">{empty}</p>;
+}
+
+function displayItem(item) {
+  if (typeof item === 'string') return item;
+  if (item && typeof item === 'object') return item.skill || item.skill_name || item.title || item.message || 'Assessment detail';
+  return 'Assessment detail';
 }

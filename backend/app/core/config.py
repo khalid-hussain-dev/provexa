@@ -18,6 +18,9 @@ class Settings(BaseModel):
     jwt_access_token_minutes: int = 30
     pending_2fa_token_minutes: int = 5
     password_reset_token_minutes: int = 30
+    adzuna_app_id: str | None = None
+    job_api_key: str | None = None
+    adzuna_country: str = "us"
 
     @property
     def is_development(self) -> bool:
@@ -61,4 +64,7 @@ def get_settings() -> Settings:
         jwt_access_token_minutes=_parse_int(os.getenv("JWT_ACCESS_TOKEN_MINUTES"), 30),
         pending_2fa_token_minutes=_parse_int(os.getenv("PENDING_2FA_TOKEN_MINUTES"), 5),
         password_reset_token_minutes=_parse_int(os.getenv("PASSWORD_RESET_TOKEN_MINUTES"), 30),
+        adzuna_app_id=os.getenv("ADZUNA_APP_ID"),
+        job_api_key=os.getenv("JOB_API_KEY"),
+        adzuna_country=os.getenv("ADZUNA_COUNTRY", "us").strip().lower() or "us",
     )

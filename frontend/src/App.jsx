@@ -10,6 +10,7 @@ import ResumeTailor from './components/ResumeTailor';
 import SubscriptionDemo from './components/SubscriptionDemo';
 import TwoFactorSetup from './components/TwoFactorSetup';
 import WorkspaceErrorBoundary from './components/WorkspaceErrorBoundary';
+import BrandLogo from './components/BrandLogo';
 import { LoadingState, Notice } from './components/UI';
 import {
   analyzeProfile,
@@ -45,6 +46,7 @@ export default function App() {
   const [authError, setAuthError] = useState('');
   const [pendingTwoFactor, setPendingTwoFactor] = useState(false);
   const [bootState, setBootState] = useState('loading');
+  const [authPhase, setAuthPhase] = useState('idle');
   const mode = getApiMode();
 
   useEffect(() => {
@@ -83,8 +85,12 @@ export default function App() {
         setPendingTwoFactor(true);
         return;
       }
+      setAuthPhase('login');
+      await delay(420);
       await enterWorkspace(await getCurrentUser());
+      setAuthPhase('idle');
     } catch (error) {
+      setAuthPhase('idle');
       setAuthError(error.message);
     } finally {
       setAuthBusy(false);
@@ -110,8 +116,12 @@ export default function App() {
     try {
       await verifyTwoFactor(code);
       setPendingTwoFactor(false);
+      setAuthPhase('login');
+      await delay(420);
       await enterWorkspace(await getCurrentUser());
+      setAuthPhase('idle');
     } catch (error) {
+      setAuthPhase('idle');
       setAuthError(error.message);
     } finally {
       setAuthBusy(false);
@@ -120,6 +130,8 @@ export default function App() {
 
   async function handleLogout() {
     try {
+      setAuthPhase('logout');
+      await delay(320);
       await logout();
     } finally {
       setUser(null);
@@ -130,6 +142,7 @@ export default function App() {
       setCourse(null);
       setResumeResult(null);
       setActiveTab('profile');
+      setAuthPhase('idle');
     }
   }
 
@@ -187,11 +200,11 @@ export default function App() {
   if (bootState === 'loading') return <LoadingState title="Opening PROVEXA" message="Checking the current candidate session…" />;
 
   if (!user || !candidate) {
-    return <LandingAuth mode={mode} busy={authBusy} error={authError} pendingTwoFactor={pendingTwoFactor} onLogin={handleLogin} onSignup={handleSignup} onVerifyTwoFactor={handleVerifyTwoFactor} onContinueDemo={() => handleLogin({ email: 'demo@provexa.local', password: 'demo-password' })} />;
+    return <LandingAuth mode={mode} busy={authBusy} error={authError} pendingTwoFactor={pendingTwoFactor} authPhase={authPhase} onLogin={handleLogin} onSignup={handleSignup} onVerifyTwoFactor={handleVerifyTwoFactor} onContinueDemo={() => handleLogin({ email: 'demo@provexa.local', password: 'demo-password' })} />;
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${authPhase === 'logout' ? 'workspace-logging-out' : ''}`.trim()}>
       <Header activeTab={activeTab} setActiveTab={setActiveTab} user={user} mode={mode} onOpenSubscription={() => setSubscriptionOpen(true)} onOpenTwoFactor={() => setTwoFactorOpen(true)} onLogout={handleLogout} />
       <main className="app-main">
         {mode === 'demo' && <Notice tone="info"><strong>Demo mode:</strong> seeded responses are clearly marked and isolated from live API calls.</Notice>}
@@ -199,9 +212,17 @@ export default function App() {
           {workspaceContent}
         </WorkspaceErrorBoundary>
       </main>
-      <footer className="app-footer"><span>PROVEXA · From potential to proof</span><span>PostgreSQL truth · Redis session state</span></footer>
+      <footer className="app-footer">
+        <BrandLogo className="footer-logo" />
+        <span className="footer-copy">Copyright © {new Date().getFullYear()} PROVEXA. All rights reserved.</span>
+        <a className="footer-credit" href="https://www.linkedin.com/in/khalid-hussain-dev/" target="_blank" rel="noreferrer">Built by VANTERIX</a>
+      </footer>
       <SubscriptionDemo isOpen={isSubscriptionOpen} onClose={() => setSubscriptionOpen(false)} />
       <TwoFactorSetup isOpen={isTwoFactorOpen} user={user} mode={mode} onBegin={beginTwoFactorSetup} onVerify={confirmTwoFactorSetup} onClose={() => setTwoFactorOpen(false)} />
     </div>
   );
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

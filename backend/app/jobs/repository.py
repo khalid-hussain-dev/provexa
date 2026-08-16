@@ -1,9 +1,12 @@
 from dataclasses import dataclass
+import re
 from uuid import uuid4
 
+import httpx
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.core.config import get_settings
 from app.database.models import CapabilityRecord, JobRecord, JobRequirementRecord
 
 
@@ -107,6 +110,7 @@ class JobRepository:
         location: str | None = None,
     ) -> tuple[list[JobRecord], int]:
         self.seed_demo_jobs()
+        self.sync_adzuna_jobs(query=query, location=location, limit=max(limit, 20))
         statement = select(JobRecord)
         if source:
             statement = statement.where(JobRecord.source == source)
@@ -122,6 +126,72 @@ class JobRepository:
         jobs = list(self._session.scalars(statement.order_by(JobRecord.created_at.desc()).offset((page - 1) * limit).limit(limit)))
         return jobs, int(total)
 
+    def sync_adzuna_jobs(self, *, query: str | None, location: str | None, limit: int) -> None:
+        settings = get_settings()
+        if not settings.adzuna_app_id or not settings.job_api_key:
+            return
+
+        search_query = (query or "software engineer").strip()
+        url = f"https://api.adzuna.com/v1/api/jobs/{settings.adzuna_country}/search/1"
+        params = {
+            "app_id": settings.adzuna_app_id,
+            "app_key": settings.job_api_key,
+            "what": search_query,
+            "results_per_page": min(max(limit, 1), 50),
+            "content-type": "application/json",
+        }
+        if location:
+            params["where"] = location
+
+        try:
+            with httpx.Client(timeout=12) as client:
+                response = client.get(url, params=params)
+                response.raise_for_status()
+                results = response.json().get("results", [])
+        except Exception:
+            return
+
+        inserted = False
+        for item in results:
+            source_url = item.get("redirect_url")
+            if not source_url or self._session.scalar(select(JobRecord.id).where(JobRecord.source_url == source_url)):
+                continue
+            job = JobRecord(
+                id=str(uuid4()),
+                title=(item.get("title") or search_query)[:255],
+                company=(item.get("company") or {}).get("display_name", "Adzuna listing")[:255],
+                location=(item.get("location") or {}).get("display_name"),
+                description=_clean_text(item.get("description") or "No description provided."),
+                seniority=None,
+                source="adzuna",
+                source_url=source_url,
+                responsibilities=[],
+                metadata_json={
+                    "provider": "adzuna",
+                    "category": (item.get("category") or {}).get("label"),
+                    "contract_type": item.get("contract_type"),
+                    "salary_min": item.get("salary_min"),
+                    "salary_max": item.get("salary_max"),
+                },
+            )
+            self._session.add(job)
+            self._session.flush()
+            for skill_name in _infer_skills(job.title, job.description):
+                self._session.add(
+                    JobRequirementRecord(
+                        id=str(uuid4()),
+                        job_id=job.id,
+                        skill_name=skill_name,
+                        importance=75.0,
+                        requirement_type="INFERRED",
+                        evidence_expectation=f"Evidence showing practical {skill_name} experience",
+                        metadata_json={"provider": "adzuna"},
+                    )
+                )
+            inserted = True
+        if inserted:
+            self._session.commit()
+
     def get_job(self, job_id: str) -> JobRecord | None:
         self.seed_demo_jobs()
         return self._session.get(JobRecord, job_id)
@@ -129,3 +199,33 @@ class JobRepository:
     def get_requirements(self, job_id: str) -> list[JobRequirementRecord]:
         return list(self._session.scalars(select(JobRequirementRecord).where(JobRequirementRecord.job_id == job_id)))
 
+
+def _clean_text(value: str) -> str:
+    text = re.sub(r"<[^>]+>", " ", value)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text[:4000]
+
+
+def _infer_skills(title: str, description: str) -> list[str]:
+    text = f"{title} {description}".lower()
+    skills = [
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Node.js",
+        "FastAPI",
+        "Django",
+        "PostgreSQL",
+        "SQL",
+        "Redis",
+        "Docker",
+        "Kubernetes",
+        "AWS",
+        "Azure",
+        "Git",
+        "Testing",
+        "REST APIs",
+    ]
+    found = [skill for skill in skills if skill.lower().replace(".", "") in text.replace(".", "")]
+    return found[:6] or ["Communication", "Problem Solving", "Delivery"]

@@ -21,6 +21,8 @@ class JobSelectionResponse(BaseModel):
     company: str
     location: str | None = None
     source: str
+    description: str | None = None
+    source_url: str | None = None
 
 
 class JobSelectionListResponse(BaseModel):
@@ -54,8 +56,11 @@ def build_platform_router() -> APIRouter:
         current_user: User = Depends(get_current_user),
         session: Session = Depends(get_db_session),
     ) -> JobSelectionListResponse:
+        candidate = CandidateRepository(session).get_or_create_for_user(current_user)
+        preferences = candidate.preferences or {}
+        target_query = preferences.get("target_role") or candidate.headline or None
         jobs, total = JobService(session).list_jobs(
-            page=page, limit=limit, source=None, query=None, location=None
+            page=page, limit=limit, source=None, query=target_query, location=candidate.location
         )
         return JobSelectionListResponse(
             jobs=[
@@ -65,6 +70,8 @@ def build_platform_router() -> APIRouter:
                     company=job.company,
                     location=job.location,
                     source=job.source,
+                    description=job.description,
+                    source_url=job.source_url,
                 )
                 for job in jobs
             ],

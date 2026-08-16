@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { ArrowRight, CheckCircle2, LockKeyhole, ShieldCheck } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 import { Notice } from './UI';
 
-export default function LandingAuth({ mode, busy, error, pendingTwoFactor, onLogin, onSignup, onVerifyTwoFactor, onContinueDemo }) {
+export default function LandingAuth({ mode, busy, error, pendingTwoFactor, authPhase, onLogin, onSignup, onVerifyTwoFactor, onContinueDemo }) {
   const [formMode, setFormMode] = useState('login');
   const [name, setName] = useState('');
   const [email, setEmail] = useState(mode === 'demo' ? 'demo@provexa.local' : '');
@@ -19,9 +20,9 @@ export default function LandingAuth({ mode, busy, error, pendingTwoFactor, onLog
   };
 
   return (
-    <main className="landing-shell">
+    <main className={`landing-shell ${authPhase === 'login' ? 'auth-entering' : ''}`.trim()}>
       <section className="landing-copy">
-        <div className="brand-mark">PROVEXA <span>VANTERIX</span></div>
+        <div className="brand-mark"><BrandLogo className="landing-logo" /></div>
         <span className="eyebrow">Career intelligence instrument</span>
         <h1>From potential<br /><em>to proof.</em></h1>
         <p className="landing-lede">Understand what you can prove, what the opportunity demands, and the next move that makes you ready.</p>
@@ -32,7 +33,7 @@ export default function LandingAuth({ mode, busy, error, pendingTwoFactor, onLog
         </div>
       </section>
 
-      <section className="auth-panel" aria-labelledby="auth-title">
+      <section className={`auth-panel ${busy ? 'auth-busy' : ''}`.trim()} aria-labelledby="auth-title">
         <div className="panel-heading">
           <span className="eyebrow">Candidate workspace</span>
           <h2 id="auth-title">Build your readiness record.</h2>

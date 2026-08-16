@@ -1,4 +1,5 @@
 import { KeyRound, LogOut, ShieldCheck, Sparkles } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 
 const TABS = [
   ['profile', 'Evidence'],
@@ -14,8 +15,7 @@ export default function Header({ activeTab, setActiveTab, user, mode, onOpenSubs
     <header className="app-header">
       <div className="header-inner">
         <button className="brand-button" type="button" onClick={() => setActiveTab('profile')} aria-label="Go to PROVEXA workspace">
-          <span className="brand-wordmark">PROVEXA</span>
-          <span className="brand-tagline">From potential to proof</span>
+          <BrandLogo showTagline />
         </button>
         <nav className="workspace-tabs" aria-label="Workspace steps">
           {TABS.map(([id, label], index) => (

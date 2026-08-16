@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, DateTime, ForeignKey, String, delete, select
+from sqlalchemy import JSON, DateTime, ForeignKey, delete, select
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, Session, mapped_column
 
 from app.database.session import Base, init_database
+from app.database.models import UuidType
 
 JsonType = JSON().with_variant(JSONB, "postgresql")
 
@@ -15,10 +16,10 @@ class InterviewContextRecord(Base):
     __tablename__ = "integration_interview_contexts"
 
     interview_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("interviews.id"), primary_key=True
+        UuidType, ForeignKey("interviews.id"), primary_key=True
     )
     profile_snapshot_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("integration_profile_analysis_snapshots.id"), nullable=False
+        UuidType, ForeignKey("integration_profile_analysis_snapshots.id"), nullable=False
     )
     profile_context: Mapped[dict] = mapped_column(JsonType, default=dict, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
@@ -31,12 +32,12 @@ class InterviewContextRecord(Base):
 class InterviewEvaluationRecord(Base):
     __tablename__ = "integration_interview_evaluations"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    id: Mapped[str] = mapped_column(UuidType, primary_key=True)
     interview_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("interviews.id"), unique=True, index=True, nullable=False
+        UuidType, ForeignKey("interviews.id"), unique=True, index=True, nullable=False
     )
     profile_snapshot_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("integration_profile_analysis_snapshots.id"), nullable=False
+        UuidType, ForeignKey("integration_profile_analysis_snapshots.id"), nullable=False
     )
     result: Mapped[dict] = mapped_column(JsonType, default=dict, nullable=False)
     created_at: Mapped[datetime] = mapped_column(

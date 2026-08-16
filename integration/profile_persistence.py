@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, DateTime, ForeignKey, String
+from sqlalchemy import JSON, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, Session
 
 from app.database.session import Base, init_database
+from app.database.models import UuidType
 
 
 JsonType = JSON().with_variant(JSONB, "postgresql")
@@ -17,9 +18,9 @@ class ProfileAnalysisSnapshotRecord(Base):
 
     __tablename__ = "integration_profile_analysis_snapshots"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    id: Mapped[str] = mapped_column(UuidType, primary_key=True)
     candidate_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("candidates.id"), index=True, nullable=False
+        UuidType, ForeignKey("candidates.id"), index=True, nullable=False
     )
     source_evidence_ids: Mapped[list] = mapped_column(JsonType, default=list, nullable=False)
     profile_context: Mapped[dict] = mapped_column(JsonType, default=dict, nullable=False)

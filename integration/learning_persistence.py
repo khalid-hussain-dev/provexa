@@ -2,19 +2,20 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, ForeignKey, String
+from sqlalchemy import DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, Session, mapped_column
 
 from app.database.session import Base, init_database
+from app.database.models import UuidType
 
 
 class CourseIntegrationContextRecord(Base):
     __tablename__ = "integration_course_contexts"
 
-    course_id: Mapped[str] = mapped_column(String(36), ForeignKey("courses.id"), primary_key=True)
-    interview_id: Mapped[str] = mapped_column(String(36), ForeignKey("interviews.id"), nullable=False)
+    course_id: Mapped[str] = mapped_column(UuidType, ForeignKey("courses.id"), primary_key=True)
+    interview_id: Mapped[str] = mapped_column(UuidType, ForeignKey("interviews.id"), nullable=False)
     evaluation_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("integration_interview_evaluations.id"), nullable=False
+        UuidType, ForeignKey("integration_interview_evaluations.id"), nullable=False
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False

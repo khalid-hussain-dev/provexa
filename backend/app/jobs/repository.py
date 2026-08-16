@@ -111,6 +111,16 @@ class JobRepository:
     ) -> tuple[list[JobRecord], int]:
         self.seed_demo_jobs()
         self.sync_adzuna_jobs(query=query, location=location, limit=max(limit, 20))
+        statement = self._build_statement(source=source, query=query, location=location)
+        total = self._session.scalar(select(func.count()).select_from(statement.subquery())) or 0
+        jobs = list(self._session.scalars(statement.order_by(JobRecord.created_at.desc()).offset((page - 1) * limit).limit(limit)))
+        if not jobs and (query or location):
+            statement = self._build_statement(source=source, query=None, location=None)
+            total = self._session.scalar(select(func.count()).select_from(statement.subquery())) or 0
+            jobs = list(self._session.scalars(statement.order_by(JobRecord.created_at.desc()).offset((page - 1) * limit).limit(limit)))
+        return jobs, int(total)
+
+    def _build_statement(self, *, source: str | None, query: str | None, location: str | None):
         statement = select(JobRecord)
         if source:
             statement = statement.where(JobRecord.source == source)
@@ -122,9 +132,7 @@ class JobRepository:
         if location:
             q = f"%{location.lower()}%"
             statement = statement.where(func.lower(func.coalesce(JobRecord.location, "")).like(q))
-        total = self._session.scalar(select(func.count()).select_from(statement.subquery())) or 0
-        jobs = list(self._session.scalars(statement.order_by(JobRecord.created_at.desc()).offset((page - 1) * limit).limit(limit)))
-        return jobs, int(total)
+        return statement
 
     def sync_adzuna_jobs(self, *, query: str | None, location: str | None, limit: int) -> None:
         settings = get_settings()

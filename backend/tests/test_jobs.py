@@ -40,6 +40,17 @@ def test_jobs_list_returns_seeded_demo_jobs() -> None:
     assert body["jobs"]
 
 
+def test_jobs_list_falls_back_when_query_is_too_narrow() -> None:
+    client = _client()
+    headers = _headers(client)
+
+    response = client.get("/api/v1/jobs?query=DefinitelyNoMatch", headers=headers)
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["jobs"]
+
+
 def test_job_detail_returns_requirements() -> None:
     client = _client()
     headers = _headers(client)

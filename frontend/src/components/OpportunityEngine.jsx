@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AlertTriangle, ArrowRight, Briefcase, Check, ExternalLink, MapPin, Target, X } from 'lucide-react';
 import { listJobs, matchJob } from '../services/api';
-import { EmptyState, ErrorState, LoadingState, ProgressBar, StepHeader } from './UI';
+import { EmptyState, ErrorState, LoadingState, ProgressBar, Spinner, StepHeader } from './UI';
 
 export default function OpportunityEngine({ candidate, selectedJob, jobAnalysis, onSelectJob }) {
   const [jobs, setJobs] = useState([]);
@@ -50,7 +50,7 @@ export default function OpportunityEngine({ candidate, selectedJob, jobAnalysis,
       <StepHeader eyebrow="02 · Target job" title="Choose the opportunity worth proving." description={`Jobs are selected from the integrated Platform surface and matched against ${candidate.target_role || 'your candidate record'}.`}>
         <div className="step-count"><Target size={16} /> {jobs.length || '—'} opportunities</div>
       </StepHeader>
-      {loading ? <LoadingState title="Finding target opportunities" message="Loading seeded or persisted Platform jobs and their match snapshots…" /> : error && jobs.length === 0 ? <ErrorState title="Jobs could not load" message={error} retryLabel="Reload jobs" onRetry={loadJobs} /> : jobs.length === 0 ? <EmptyState title="No opportunities available" message="The integrated Platform returned an empty job set." action={<button type="button" className="btn-secondary" onClick={loadJobs}>Reload jobs</button>} /> : (
+      {loading ? <LoadingState title="Finding target opportunities" message="Loading seeded or persisted Platform jobs and their match snapshots…" /> : error && jobs.length === 0 ? <ErrorState title="Jobs could not load" message={error} retryLabel="Reload jobs" onRetry={loadJobs} /> : jobs.length === 0 ? <EmptyState title="No opportunities available" message="The integrated Platform returned an empty job set." action={<button type="button" className="btn-secondary" onClick={loadJobs}><Spinner size={15} label="Reload jobs" /> Reload jobs</button>} /> : (
         <>
           {error && <ErrorState title="The selected job could not be assessed" message={error} retryLabel="Reload jobs" onRetry={loadJobs} />}
         <div className="opportunity-layout">

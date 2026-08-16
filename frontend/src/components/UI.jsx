@@ -1,9 +1,19 @@
-import { AlertCircle, CheckCircle2, Loader2, RotateCcw } from 'lucide-react';
+import { AlertCircle, CheckCircle2, RotateCcw } from 'lucide-react';
+
+export function Spinner({ size = 24, label = 'Loading' }) {
+  return (
+    <span className="spinner" role="status" aria-label={label} style={{ width: size, height: size }}>
+      <span />
+      <span />
+      <span />
+    </span>
+  );
+}
 
 export function LoadingState({ title = 'Loading', message = 'Preparing your workspace…' }) {
   return (
     <div className="state-panel" role="status" aria-live="polite">
-      <Loader2 className="spin" size={28} aria-hidden="true" />
+      <Spinner size={32} label={title} />
       <h3>{title}</h3>
       <p>{message}</p>
     </div>

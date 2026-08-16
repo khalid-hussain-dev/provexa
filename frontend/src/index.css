@@ -45,6 +45,10 @@ p { color: var(--ink-700); }
 .brand-logo img { display: block; width: 8.4rem; max-width: 100%; height: auto; filter: drop-shadow(0 8px 18px rgba(49, 92, 74, .16)); }
 .brand-button .brand-logo img { width: 7.6rem; }
 .brand-tagline { color: var(--stone-500); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; }
+.spinner { display: inline-grid; grid-auto-flow: column; gap: .18rem; align-items: center; justify-items: center; }
+.spinner span { display: block; width: .4rem; height: .4rem; border-radius: 50%; background: currentColor; animation: spinnerPulse 1s ease-in-out infinite both; }
+.spinner span:nth-child(2) { animation-delay: .15s; }
+.spinner span:nth-child(3) { animation-delay: .3s; }
 .workspace-tabs { display: flex; gap: .2rem; flex: 1; overflow-x: auto; scrollbar-width: thin; }
 .workspace-tabs button { border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--stone-500); padding: .7rem .65rem .55rem; white-space: nowrap; font-size: .78rem; }
 .workspace-tabs button span { margin-right: .35rem; font-family: var(--font-mono); font-size: .68rem; }
@@ -248,6 +252,7 @@ p { color: var(--ink-700); }
 
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spinnerPulse { 0%, 80%, 100% { transform: translateY(0); opacity: .35; } 40% { transform: translateY(-.18rem); opacity: 1; } }
 @keyframes authPanelIn { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes authPulse { from { transform: translateY(0); box-shadow: var(--shadow-elevated); } to { transform: translateY(-2px); box-shadow: 0 22px 55px rgba(49, 92, 74, .16); } }
 @keyframes landingLift { to { opacity: .82; transform: translateY(-8px); } }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight, CheckCircle2, LockKeyhole, ShieldCheck } from 'lucide-react';
 import BrandLogo from './BrandLogo';
-import { Notice } from './UI';
+import { Notice, Spinner } from './UI';
 
 export default function LandingAuth({ mode, busy, error, pendingTwoFactor, authPhase, onLogin, onSignup, onVerifyTwoFactor, onContinueDemo }) {
   const [formMode, setFormMode] = useState('login');
@@ -22,7 +22,7 @@ export default function LandingAuth({ mode, busy, error, pendingTwoFactor, authP
   return (
     <main className={`landing-shell ${authPhase === 'login' ? 'auth-entering' : ''}`.trim()}>
       <section className="landing-copy">
-        <div className="brand-mark"><BrandLogo className="landing-logo" /></div>
+        <div className="brand-mark"><BrandLogo className="landing-logo" src="/main_logo.png" alt="PROVEXA main logo" /></div>
         <span className="eyebrow">Career intelligence instrument</span>
         <h1>From potential<br /><em>to proof.</em></h1>
         <p className="landing-lede">Understand what you can prove, what the opportunity demands, and the next move that makes you ready.</p>
@@ -50,7 +50,7 @@ export default function LandingAuth({ mode, busy, error, pendingTwoFactor, authP
             <div className="auth-callout"><ShieldCheck size={20} /><span>Two-factor verification is required by the integrated host.</span></div>
             <label className="form-label" htmlFor="two-factor-code">Authentication code</label>
             <input id="two-factor-code" className="form-input" inputMode="numeric" autoComplete="one-time-code" maxLength={6} value={code} onChange={(event) => setCode(event.target.value)} required />
-            <button className="btn-primary btn-wide" type="submit" disabled={busy}>{busy ? 'Verifying…' : 'Verify and continue'} <ArrowRight size={16} /></button>
+            <button className="btn-primary btn-wide" type="submit" disabled={busy}>{busy ? <><Spinner size={16} label="Verifying" /> Verifying…</> : <>Verify and continue <ArrowRight size={16} /></>}</button>
           </form>
         ) : (
           <>
@@ -69,7 +69,7 @@ export default function LandingAuth({ mode, busy, error, pendingTwoFactor, authP
               <input id="auth-email" className="form-input" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
               <label className="form-label" htmlFor="auth-password">Password</label>
               <input id="auth-password" className="form-input" type="password" autoComplete={formMode === 'signup' ? 'new-password' : 'current-password'} minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} required />
-              <button className="btn-primary btn-wide" type="submit" disabled={busy}>{busy ? 'Working…' : formMode === 'signup' ? 'Create account' : 'Sign in'} <ArrowRight size={16} /></button>
+              <button className="btn-primary btn-wide" type="submit" disabled={busy}>{busy ? <><Spinner size={16} label="Working" /> Working…</> : <>{formMode === 'signup' ? 'Create account' : 'Sign in'} <ArrowRight size={16} /></>}</button>
             </form>
             {mode === 'demo' && (
               <button type="button" className="demo-link" onClick={onContinueDemo} disabled={busy}><LockKeyhole size={14} /> Enter seeded demo workspace</button>

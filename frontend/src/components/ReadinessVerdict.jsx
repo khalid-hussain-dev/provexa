@@ -21,16 +21,19 @@ export default function ReadinessVerdict({ selectedJob, jobAnalysis, interviewSt
   }
 
   const verdict = formatVerdict(result.verdict);
-  const levelLabel = formatAssessmentLevel(result.assessed_level);
   const interviewScore = roundScore(result.overall_score);
   const roleMatchScore = roundScore(result.role_match_percentage ?? jobAnalysis?.match_score);
   const platformReadinessScore = roundScore(jobAnalysis?.readiness_score);
   const strengths = pickItems(result.analysis?.strengths, result.strengths);
   const weaknesses = pickItems(result.analysis?.weaknesses, result.gaps);
   const recommendations = Array.isArray(result.recommendations) ? result.recommendations : [];
-  const summaryText =
-    result.interview_summary ||
-    `The interview is complete. The score gives a validated snapshot of your readiness for ${result.target_role || selectedJob.title}.`;
+  const targetRole = result.target_role || selectedJob.title;
+  const summaryText = formatSummary({
+    result,
+    targetRole,
+    verdict,
+    interviewScore,
+  });
   const nextAction = buildNextAction({
     result,
     selectedJob,
@@ -53,7 +56,7 @@ export default function ReadinessVerdict({ selectedJob, jobAnalysis, interviewSt
         <div>
           <span className="eyebrow">Interview evaluation</span>
           <h2>
-            {levelLabel} for {result.target_role || selectedJob.title}
+            Interview assessment for {targetRole}
           </h2>
           <p>{summaryText}</p>
         </div>
@@ -196,18 +199,21 @@ function formatVerdict(value) {
   return normalized.charAt(0).toUpperCase() + normalized.slice(1);
 }
 
-function formatAssessmentLevel(value) {
-  if (!value) return 'Readiness review';
-  const normalized = String(value).replace(/_/g, ' ').trim();
-  return `${titleCase(normalized)}-level readiness`;
-}
+function formatSummary({ result, targetRole, verdict, interviewScore }) {
+  const rawSummary = typeof result.interview_summary === 'string' ? result.interview_summary.trim() : '';
+  const hasLegacySummary = /^Interview Assessment for/i.test(rawSummary);
 
-function titleCase(value) {
-  return value
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ');
+  if (rawSummary && !hasLegacySummary) return rawSummary;
+
+  if (verdict === 'Ready to apply') {
+    return `The interview is complete, with an overall score of ${interviewScore}/100 for ${targetRole}. Your evidence is strong enough to move toward applications.`;
+  }
+
+  if (verdict === 'Apply with caution') {
+    return `The interview is complete, with an overall score of ${interviewScore}/100 for ${targetRole}. Strengthen the highlighted gaps before applying broadly.`;
+  }
+
+  return `The interview is complete, with an overall score of ${interviewScore}/100 for ${targetRole}. Use the recommended learning path to build stronger evidence before applying.`;
 }
 
 function buildNextAction({ result, selectedJob, recommendations, weaknesses, jobAnalysis }) {

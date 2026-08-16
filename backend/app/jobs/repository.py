@@ -139,66 +139,70 @@ class JobRepository:
         if not settings.adzuna_app_id or not settings.job_api_key:
             return
 
-        search_query = (query or "software engineer").strip()
         url = f"https://api.adzuna.com/v1/api/jobs/{settings.adzuna_country}/search/1"
-        params = {
-            "app_id": settings.adzuna_app_id,
-            "app_key": settings.job_api_key,
-            "what": search_query,
-            "results_per_page": min(max(limit, 1), 50),
-            "content-type": "application/json",
-        }
-        if location:
-            params["where"] = location
+        inserted = False
+        search_variants = _adzuna_search_variants(query=query, location=location)
 
         try:
             with httpx.Client(timeout=12) as client:
-                response = client.get(url, params=params)
-                response.raise_for_status()
-                results = response.json().get("results", [])
+                for search_query, search_location in search_variants:
+                    params = {
+                        "app_id": settings.adzuna_app_id,
+                        "app_key": settings.job_api_key,
+                        "what": search_query,
+                        "results_per_page": min(max(limit, 1), 50),
+                        "content-type": "application/json",
+                    }
+                    if search_location:
+                        params["where"] = search_location
+
+                    response = client.get(url, params=params)
+                    response.raise_for_status()
+                    results = response.json().get("results", [])
+                    for item in results:
+                        source_url = item.get("redirect_url")
+                        if not source_url or self._session.scalar(select(JobRecord.id).where(JobRecord.source_url == source_url)):
+                            continue
+                        job = JobRecord(
+                            id=str(uuid4()),
+                            title=(item.get("title") or search_query)[:255],
+                            company=(item.get("company") or {}).get("display_name", "Adzuna listing")[:255],
+                            location=(item.get("location") or {}).get("display_name"),
+                            description=_clean_text(item.get("description") or "No description provided."),
+                            seniority=None,
+                            source="adzuna",
+                            source_url=source_url,
+                            responsibilities=[],
+                            metadata_json={
+                                "provider": "adzuna",
+                                "category": (item.get("category") or {}).get("label"),
+                                "contract_type": item.get("contract_type"),
+                                "salary_min": item.get("salary_min"),
+                                "salary_max": item.get("salary_max"),
+                                "search_query": search_query,
+                                "search_location": search_location,
+                            },
+                        )
+                        self._session.add(job)
+                        self._session.flush()
+                        for skill_name in _infer_skills(job.title, job.description):
+                            self._session.add(
+                                JobRequirementRecord(
+                                    id=str(uuid4()),
+                                    job_id=job.id,
+                                    skill_name=skill_name,
+                                    importance=75.0,
+                                    requirement_type="INFERRED",
+                                    evidence_expectation=f"Evidence showing practical {skill_name} experience",
+                                    metadata_json={"provider": "adzuna"},
+                                )
+                            )
+                        inserted = True
+                    if inserted:
+                        self._session.commit()
+                        return
         except Exception:
             return
-
-        inserted = False
-        for item in results:
-            source_url = item.get("redirect_url")
-            if not source_url or self._session.scalar(select(JobRecord.id).where(JobRecord.source_url == source_url)):
-                continue
-            job = JobRecord(
-                id=str(uuid4()),
-                title=(item.get("title") or search_query)[:255],
-                company=(item.get("company") or {}).get("display_name", "Adzuna listing")[:255],
-                location=(item.get("location") or {}).get("display_name"),
-                description=_clean_text(item.get("description") or "No description provided."),
-                seniority=None,
-                source="adzuna",
-                source_url=source_url,
-                responsibilities=[],
-                metadata_json={
-                    "provider": "adzuna",
-                    "category": (item.get("category") or {}).get("label"),
-                    "contract_type": item.get("contract_type"),
-                    "salary_min": item.get("salary_min"),
-                    "salary_max": item.get("salary_max"),
-                },
-            )
-            self._session.add(job)
-            self._session.flush()
-            for skill_name in _infer_skills(job.title, job.description):
-                self._session.add(
-                    JobRequirementRecord(
-                        id=str(uuid4()),
-                        job_id=job.id,
-                        skill_name=skill_name,
-                        importance=75.0,
-                        requirement_type="INFERRED",
-                        evidence_expectation=f"Evidence showing practical {skill_name} experience",
-                        metadata_json={"provider": "adzuna"},
-                    )
-                )
-            inserted = True
-        if inserted:
-            self._session.commit()
 
     def get_job(self, job_id: str) -> JobRecord | None:
         self.seed_demo_jobs()
@@ -237,3 +241,47 @@ def _infer_skills(title: str, description: str) -> list[str]:
     ]
     found = [skill for skill in skills if skill.lower().replace(".", "") in text.replace(".", "")]
     return found[:6] or ["Communication", "Problem Solving", "Delivery"]
+
+
+def _adzuna_search_variants(*, query: str | None, location: str | None) -> list[tuple[str, str | None]]:
+    normalized_query = (query or "").strip()
+    normalized_location = (location or "").strip() or None
+    role_variants = _role_variants(normalized_query)
+    search_terms = [normalized_query] if normalized_query else []
+    for variant in role_variants:
+        if variant not in search_terms:
+            search_terms.append(variant)
+    if not search_terms:
+        search_terms = ["software engineer", "developer", "engineer"]
+
+    variants: list[tuple[str, str | None]] = []
+    seen: set[tuple[str, str | None]] = set()
+    for term in search_terms:
+        for candidate_location in (normalized_location, None):
+            pair = (term, candidate_location)
+            if pair not in seen:
+                seen.add(pair)
+                variants.append(pair)
+    return variants
+
+
+def _role_variants(query: str) -> list[str]:
+    lowered = query.lower()
+    variants: list[str] = []
+    if "mobile" in lowered:
+        variants.extend(["Mobile Developer", "Android Developer", "iOS Developer", "Mobile App Developer"])
+    if "backend" in lowered:
+        variants.extend(["Backend Developer", "Python Developer", "API Engineer"])
+    if "frontend" in lowered or "front end" in lowered:
+        variants.extend(["Frontend Developer", "React Developer", "UI Engineer"])
+    if "full stack" in lowered or "fullstack" in lowered:
+        variants.extend(["Full Stack Developer", "Full Stack Engineer", "Web Developer"])
+    if "data" in lowered:
+        variants.extend(["Data Engineer", "Data Analyst", "Machine Learning Engineer"])
+    if "devops" in lowered or "platform" in lowered or "infrastructure" in lowered:
+        variants.extend(["DevOps Engineer", "Platform Engineer", "Site Reliability Engineer"])
+    if "product" in lowered:
+        variants.extend(["Product Manager", "Technical Product Manager"])
+    if not variants:
+        variants.extend(["software engineer", "developer", "engineer"])
+    return variants

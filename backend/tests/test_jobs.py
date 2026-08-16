@@ -2,6 +2,7 @@ from fastapi.testclient import TestClient
 
 from app.auth.repository import reset_user_repository
 from app.main import create_app
+from app.jobs.repository import _adzuna_search_variants
 
 
 def _client() -> TestClient:
@@ -88,3 +89,12 @@ def test_jobs_detail_rejects_unknown_id() -> None:
 
     assert response.status_code == 404
     assert response.json()["error"]["code"] == "NOT_FOUND"
+
+
+def test_adzuna_search_variants_expand_mobile_roles() -> None:
+    variants = _adzuna_search_variants(query="Mobile Engineer", location="Karachi, Pakistan")
+
+    assert variants[0] == ("Mobile Engineer", "Karachi, Pakistan")
+    assert ("Mobile Engineer", None) in variants
+    assert ("Mobile Developer", "Karachi, Pakistan") in variants
+    assert ("Android Developer", None) in variants

@@ -60,7 +60,7 @@ def build_platform_router() -> APIRouter:
         preferences = candidate.preferences or {}
         target_query = preferences.get("target_role") or candidate.headline or None
         jobs, total = JobService(session).list_jobs(
-            page=page, limit=limit, source=None, query=target_query, location=candidate.location
+            page=page, limit=limit, source="adzuna", query=target_query, location=candidate.location
         )
         return JobSelectionListResponse(
             jobs=[
